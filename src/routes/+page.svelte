@@ -3,7 +3,7 @@
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
 	export let data;
-	$: allUsers = data.allUsers
+	$: allUsers = data.allUsers;
 </script>
 
 <svelte:head>
@@ -23,7 +23,7 @@
 		to your new<br />SvelteKit app
 	</h1>
 
-	<h2>
+	<h2 class="bg-slate-400 text-m">
 		try editing <strong>src/routes/+page.svelte</strong>
 	</h2>
 
@@ -41,9 +41,9 @@
 					{#each allUsers as item}
 						<tr>
 							<th>
-								<h3>{item.fullName}</h3>
+								<h3>{item.name}</h3>
 							</th>
-							<th class="shade"><h3>{item.quote}</h3></th>
+							<th class="shade"><h3>{item.email}</h3></th>
 						</tr>
 					{/each}
 				</table>
@@ -89,7 +89,7 @@
 	h3 {
 		margin: 10px 5px;
 	}
-	.shade{
+	.shade {
 		background: #f5f5f513;
 	}
 </style>
