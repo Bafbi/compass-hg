@@ -1,95 +1,31 @@
 <script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	import {MultiSelect} from 'carbon-components-svelte';
+	import "carbon-components-svelte/css/g90.css";
+	import Ticket from './Ticket.svelte';
 	export let data;
-	$: allUsers = data.allUsers;
+	$: tickets = data.allTickets;
 </script>
 
 <svelte:head>
 	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<meta name="description" content="IT Ticketing app for Holweg" />
 </svelte:head>
 
+<!-- Filter -->
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2 class="bg-slate-400 text-m">
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
+	<MultiSelect
+	titleText="Contact"
+  label="Select contact methods..."
+  items={[
+    { id: "0", text: "Slack" },
+    { id: "1", text: "Email" },
+    { id: "2", text: "Fax" },
+  ]}
+	/>
 </section>
+<!-- Tickets -->
 <section>
-	<div class="prose">
-		<div class="md:w-[80vw] prose-h1:md:text-5xl">
-			<h1>Welcome to SvelteKit + <span class="text-warning">Drizzle ORM</span></h1>
-			<blockquote>
-				<h4>This Data Comes from Database :</h4>
-			</blockquote>
-			<div class="px-10">
-				<table>
-					{#each allUsers as item}
-						<tr>
-							<th>
-								<h3>{item.name}</h3>
-							</th>
-							<th class="shade"><h3>{item.email}</h3></th>
-						</tr>
-					{/each}
-				</table>
-			</div>
-		</div>
-	</div>
+	{#each tickets as {title}}
+		<Ticket {title} />
+	{/each}
 </section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
-
-	th,
-	tr {
-		padding: 0px 10px;
-		border: 1px solid #827f7f;
-	}
-	h3 {
-		margin: 10px 5px;
-	}
-	.shade {
-		background: #f5f5f513;
-	}
-</style>
