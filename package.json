@@ -10,7 +10,9 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"generate": "drizzle-kit generate:sqlite",
-		"studio": "drizzle-kit studio"
+		"studio": "drizzle-kit studio",
+		"dbpush": "drizzle-kit push:sqlite",
+		"dbdrop": "drizzle-kit drop"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
