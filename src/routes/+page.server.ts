@@ -1,11 +1,32 @@
-import { db } from "$lib/server/db";
-import { tickets } from "$lib/server/schema";
+import { db } from '$lib/server/db';
+import { eq } from 'drizzle-orm';
+import { tickets, users, type Ticket } from '$lib/server/schema';
 
 import type { PageServerLoad } from './$types';
 
+export type ShowTicket = Ticket & {
+        createdBy_name: string | null;
+}
+
 export const load: PageServerLoad = async () => {
-    const allTickets = await db.select().from(tickets).all();
-    return {
-        allTickets
-    }
+	const selectAllTickets = await db
+		.select({
+            ticket: {...tickets},
+            user: {
+                name: users.name
+            }
+        })
+		.from(tickets)
+		.innerJoin(users, eq(tickets.createdBy, users.id))
+		.all();
+
+    const allTickets: ShowTicket[] = selectAllTickets.map((ticket) => {
+        return {
+            ...ticket.ticket,
+            createdBy_name: ticket.user.name
+        }
+    });
+	return {
+		allTickets
+	};
 };

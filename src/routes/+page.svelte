@@ -25,7 +25,7 @@
 </section>
 <!-- Tickets -->
 <section>
-	{#each tickets as {title}}
-		<Ticket {title} />
+	{#each tickets as ticketData (ticketData.id)}
+		<Ticket {ticketData} />
 	{/each}
 </section>
