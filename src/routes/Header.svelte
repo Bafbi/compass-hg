@@ -2,9 +2,9 @@
 	import { page } from '$app/stores';
 </script>
 
-<header class="bg-black flex flex-row justify-between p-4">
+<header class="bg-primary-container flex flex-row justify-between p-4">
 	<h1>
-		<a href="/" class="text-white text-2xl">CompassHG</a>
+		<a href="/" class="text-2xl">CompassHG</a>
 	</h1>
 	<div class="">
 		<p class="">

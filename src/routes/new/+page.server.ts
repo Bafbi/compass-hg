@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { insertTicketSchema, tickets, type InsertTicket } from '$lib/server/schema';
+import { insertTicketSchema, tickets, type InsertTicket, serviceEnum } from '$lib/server/schema';
 import { superValidate } from 'sveltekit-superforms/server';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -10,7 +10,7 @@ export const load: PageServerLoad = async () => {
 	const form = await superValidate(insertTicketSchema);
 
 	// Always return { form } in load and form actions.
-	return { form };
+	return { form, serviceEnum };
 };
 
 const insertTicketFormSchema = insertTicketSchema.pick({ title: true, fromService: true });

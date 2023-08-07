@@ -1,6 +1,4 @@
 <script>
-	import {MultiSelect} from 'carbon-components-svelte';
-	import "carbon-components-svelte/css/g90.css";
 	import Ticket from './Ticket.svelte';
 	export let data;
 	$: tickets = data.allTickets;
@@ -13,15 +11,11 @@
 
 <!-- Filter -->
 <section>
-	<MultiSelect
-	titleText="Contact"
-  label="Select contact methods..."
-  items={[
-    { id: "0", text: "Slack" },
-    { id: "1", text: "Email" },
-    { id: "2", text: "Fax" },
-  ]}
-	/>
+	<button class="bg-primary rounded-lg p-2">
+		<a href="new">
+			Create Ticket
+		</a>
+	</button>
 </section>
 <!-- Tickets -->
 <section>

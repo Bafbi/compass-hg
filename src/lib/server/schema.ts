@@ -3,6 +3,8 @@ import { createInsertSchema } from 'drizzle-zod';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { users, accounts, sessions, verificationTokens } from './sqlite-nextauth-adapter';
 
+export const serviceEnum = ['RH', 'IT'];
+
 const tickets = sqliteTable('tickets', {
 	id: text('id').notNull().primaryKey(),
 	title: text('title').notNull(),
@@ -21,7 +23,7 @@ const tickets = sqliteTable('tickets', {
 	requester: text('requester')
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	fromService: text('from_service', { enum: ['RH', 'IT'] }).notNull(),
+	fromService: text('from_service', { enum: serviceEnum as [string, ...string[]] }).notNull(),
 	status: text('status', { enum: ['OPEN', 'CLOSED'] }).notNull(),
 	plannedFor: integer('planned_for', { mode: 'timestamp' })
 });
