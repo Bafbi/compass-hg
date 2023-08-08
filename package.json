@@ -12,7 +12,8 @@
 		"generate": "drizzle-kit generate:sqlite",
 		"studio": "drizzle-kit studio",
 		"dbpush": "drizzle-kit push:sqlite",
-		"dbdrop": "drizzle-kit drop"
+		"dbdrop": "drizzle-kit drop",
+		"dbmigrate": "node ./migrate.js"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
@@ -29,10 +30,12 @@
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.30.0",
+		"mdsvex": "^0.11.0",
 		"postcss": "^8.4.26",
 		"prettier": "^2.8.8",
 		"prettier-plugin-svelte": "^2.10.1",
 		"prettier-plugin-tailwindcss": "^0.4.1",
+		"rehype-sanitize": "^5.0.1",
 		"svelte": "^4.0.5",
 		"svelte-check": "^3.4.3",
 		"sveltekit-superforms": "^1.4.0",

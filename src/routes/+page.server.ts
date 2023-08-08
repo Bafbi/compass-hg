@@ -4,7 +4,7 @@ import { tickets, users, type Ticket } from '$lib/server/schema';
 
 import type { PageServerLoad } from './$types';
 
-export type ShowTicket = Ticket & {
+export type TicketPreview = Ticket & {
         createdBy_name: string | null;
 }
 
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async () => {
 		.innerJoin(users, eq(tickets.createdBy, users.id))
 		.all();
 
-    const allTickets: ShowTicket[] = selectAllTickets.map((ticket) => {
+    const allTickets: TicketPreview[] = selectAllTickets.map((ticket) => {
         return {
             ...ticket.ticket,
             createdBy_name: ticket.user.name

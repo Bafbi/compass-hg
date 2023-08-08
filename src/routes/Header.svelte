@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 </script>
 
-<header class="bg-primary-container flex flex-row justify-between p-4">
+<header class="bg-surface-variant flex flex-row justify-between p-4 rounded-lg mx-4 -translate-y-2">
 	<h1>
 		<a href="/" class="text-2xl">CompassHG</a>
 	</h1>

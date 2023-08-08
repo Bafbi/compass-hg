@@ -3,7 +3,7 @@ import AzureAd from "@auth/core/providers/azure-ad";
 import { AZUREAD_CLIENT_ID, AZUREAD_CLIENT_SECRET, AZUREAD_TENANT_ID } from "$env/static/private";
 import { SQLiteDrizzleAdapter } from "$lib/server/sqlite-nextauth-adapter";
 import { db } from "$lib/server/db";
-import type { DefaultSession } from "@auth/core/types";
+import type { DefaultSession, User } from "@auth/core/types";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -15,6 +15,7 @@ declare module "@auth/core/types" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      is_admin: boolean;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -24,6 +25,14 @@ declare module "@auth/core/types" {
   //   // ...other properties
   //   // role: UserRole;
   // }
+}
+
+declare module "@auth/core/types" {
+  interface User {
+    is_admin: boolean; 
+    // ...other properties
+    // role: UserRole;
+  }
 }
 
 declare module '@auth/core/jwt' {
@@ -41,6 +50,7 @@ export const handle = SvelteKitAuth({
       user: {
         ...session.user,
         id: user.id,
+        is_admin: user.is_admin,
       },
     }),
     jwt: async ({ token, account }) => {

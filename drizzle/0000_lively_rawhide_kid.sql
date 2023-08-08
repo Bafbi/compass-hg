@@ -36,7 +36,8 @@ CREATE TABLE `sessions` (
 
 CREATE TABLE `tickets` (
 	`id` text PRIMARY KEY NOT NULL,
-	`title` text NOT NULL,
+	`title` text(200) NOT NULL,
+	`body` text NOT NULL,
 	`created_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
 	`updated_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
 	`created_by` text NOT NULL,
