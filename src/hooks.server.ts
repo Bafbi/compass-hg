@@ -61,5 +61,5 @@ export const handle = SvelteKitAuth({
     },
   },
   adapter: SQLiteDrizzleAdapter(db),
-  providers: [AzureAd({ clientId: AZUREAD_CLIENT_ID, clientSecret: AZUREAD_CLIENT_SECRET, tenantId: AZUREAD_TENANT_ID })],
+  providers: [AzureAd({ clientId: AZUREAD_CLIENT_ID, clientSecret: AZUREAD_CLIENT_SECRET, tenantId: AZUREAD_TENANT_ID, allowDangerousEmailAccountLinking: true})],
 });
