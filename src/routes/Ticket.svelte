@@ -9,30 +9,32 @@
 
 <a href={'t/' + ticket.id}>
 	<div
-		class=" bg-gradient-to-bl from-surface from-60% to-secondary-container flex space-x-4 rounded-xl p-4 shadow-lg"
+		class=" relative flex overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg"
 	>
+		<!-- Status indicator -->
+		<span class=" hidden bg-status-open bg-status-closed"></span>
+		<div class="bg-status-{ticket.status.toLocaleLowerCase()} absolute bottom-0 left-0 top-0 w-1" title="Status : {ticket.status.toLocaleLowerCase()}" />
 		<div class="shrink-0">
 			<img class="h-12 w-12" src={githubLogo} alt="ChitChat Logo" />
 		</div>
 		<div class="flex-1 overflow-hidden">
-			<div class="text-xl font-bold text-primary whitespace-normal" title={ticket.body}>{ticket.title}</div>
-			<p class="text-sm text-outline">#{ticket.id}</p>
-		</div>
-		<div>
-			<div class="">Status: {ticket.status}</div>
-			<div class="text-outline">Service: {ticket.fromService}</div>
-		</div>
-		<div class="text-right min-w-fit">
-			<div class="text-outline text-sm">
-				<span>Open</span>
-				{#if dayjs().diff(ticket.createdAt, 'day') < 1}
-					<span>{dayjs().diff(ticket.createdAt, 'hour')}h</span>
-				{:else}
-					<span>{dayjs().diff(ticket.createdAt, 'day')}d</span>
-				{/if}
-        <span>ago</span>
+			<div class="whitespace-normal text-xl font-bold text-primary" title={ticket.body}>
+				{ticket.title}
 			</div>
-			<span class="text-outline text-sm">by {ticket.createdBy_name}</span>
+			<div class="text-sm text-outline">
+				<!-- <span class=" font-light">#{ticket.id}</span> -->
+				<span>Open</span>
+				<strong>
+					{#if dayjs().diff(ticket.createdAt, 'day') < 1}
+						<span>{dayjs().diff(ticket.createdAt, 'hour')}h</span>
+					{:else}
+						<span>{dayjs().diff(ticket.createdAt, 'day')}d</span>
+					{/if}
+				</strong>
+				<span>ago</span>
+				<span class="">by <strong>{ticket.requester_name}</strong></span>
+				<span class="">from <strong>{ticket.fromService}</strong></span>
+			</div>
 		</div>
 	</div>
 </a>

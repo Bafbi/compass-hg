@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores';
+	import { signIn, signOut } from "@auth/sveltekit/client"
 </script>
 
 <header class="bg-surface-variant flex flex-row justify-between p-4 rounded-lg mx-4 -translate-y-2">
@@ -18,7 +19,7 @@
 				<a href="/auth/signout" class="button" data-sveltekit-preload-data="off">Sign out</a>
 			{:else}
 				<span class="">You are not signed in</span>
-				<a href="/auth/signin" class="buttonPrimary" data-sveltekit-preload-data="off">Sign in</a>
+				<button on:click={() => signIn("azure-ad")} class="buttonPrimary" data-sveltekit-preload-data="off">Sign in</button>
 			{/if}
 		</p>
 	</div>

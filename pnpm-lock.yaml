@@ -6,8 +6,11 @@ settings:
 
 dependencies:
   '@auth/core':
-    specifier: ^0.10.0
-    version: 0.10.0
+    specifier: ^0.10.2
+    version: 0.10.2
+  '@auth/drizzle-adapter':
+    specifier: ^0.2.1
+    version: 0.2.1
   '@auth/sveltekit':
     specifier: ^0.3.6
     version: 0.3.6(@sveltejs/kit@1.22.3)(svelte@4.0.5)
@@ -32,19 +35,19 @@ devDependencies:
     specifier: ^1.0.0
     version: 1.0.0
   '@sveltejs/adapter-auto':
-    specifier: ^2.0.0
+    specifier: ^2.1.0
     version: 2.1.0(@sveltejs/kit@1.22.3)
   '@sveltejs/kit':
-    specifier: ^1.20.4
+    specifier: ^1.22.3
     version: 1.22.3(svelte@4.0.5)(vite@4.4.4)
   '@types/cookie':
     specifier: ^0.5.1
     version: 0.5.1
   '@typescript-eslint/eslint-plugin':
-    specifier: ^5.45.0
+    specifier: ^5.62.0
     version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.45.0)(typescript@5.1.6)
   '@typescript-eslint/parser':
-    specifier: ^5.45.0
+    specifier: ^5.62.0
     version: 5.62.0(eslint@8.45.0)(typescript@5.1.6)
   autoprefixer:
     specifier: ^10.4.14
@@ -59,13 +62,13 @@ devDependencies:
     specifier: ^0.4.4
     version: 0.4.4(drizzle-orm@0.27.2)(zod@3.21.4)
   eslint:
-    specifier: ^8.28.0
+    specifier: ^8.45.0
     version: 8.45.0
   eslint-config-prettier:
-    specifier: ^8.5.0
+    specifier: ^8.8.0
     version: 8.8.0(eslint@8.45.0)
   eslint-plugin-svelte:
-    specifier: ^2.30.0
+    specifier: ^2.32.2
     version: 2.32.2(eslint@8.45.0)(svelte@4.0.5)
   mdsvex:
     specifier: ^0.11.0
@@ -89,7 +92,7 @@ devDependencies:
     specifier: ^4.0.5
     version: 4.0.5
   svelte-check:
-    specifier: ^3.4.3
+    specifier: ^3.4.6
     version: 3.4.6(postcss@8.4.26)(svelte@4.0.5)
   sveltekit-superforms:
     specifier: ^1.4.0
@@ -101,13 +104,13 @@ devDependencies:
     specifier: ^3.3.3
     version: 3.3.3
   tslib:
-    specifier: ^2.4.1
+    specifier: ^2.6.0
     version: 2.6.0
   typescript:
-    specifier: ^5.0.0
+    specifier: ^5.1.6
     version: 5.1.6
   vite:
-    specifier: ^4.4.2
+    specifier: ^4.4.4
     version: 4.4.4
   zod:
     specifier: ^3.21.4
@@ -146,6 +149,46 @@ packages:
       oauth4webapi: 2.3.0
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
+    dev: false
+
+  /@auth/core@0.10.1:
+    resolution: {integrity: sha512-zTE9cMRaAeTHvB78nRMovXW0D6ZnT3ldoGU+2PD5YAC+1G591LdOc4qjVaCyg5vmGjcTlHOpB4ApzyXXQkS1dA==}
+    peerDependencies:
+      nodemailer: ^6.8.0
+    peerDependenciesMeta:
+      nodemailer:
+        optional: true
+    dependencies:
+      '@panva/hkdf': 1.1.1
+      cookie: 0.5.0
+      jose: 4.14.4
+      oauth4webapi: 2.3.0
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
+    dev: false
+
+  /@auth/core@0.10.2:
+    resolution: {integrity: sha512-fe6nwrZTZFSoPf82gXxWQY9EkEv6rgsPjYs+WM1Gpgqfi+eNsXdYEJV57mnF30hIyWlPcxyC/KjGLcYw+G/KXw==}
+    peerDependencies:
+      nodemailer: ^6.8.0
+    peerDependenciesMeta:
+      nodemailer:
+        optional: true
+    dependencies:
+      '@panva/hkdf': 1.1.1
+      cookie: 0.5.0
+      jose: 4.14.4
+      oauth4webapi: 2.3.0
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
+    dev: false
+
+  /@auth/drizzle-adapter@0.2.1:
+    resolution: {integrity: sha512-RGIiFGTrmWYYNeGw2KUX1WyTtsUNjSevSTf2c+3bdoUT73sfvarHaxLZ3qdI/+UyEdQVMiNkescU8fLqqQCOVg==}
+    dependencies:
+      '@auth/core': 0.10.1
+    transitivePeerDependencies:
+      - nodemailer
     dev: false
 
   /@auth/sveltekit@0.3.6(@sveltejs/kit@1.22.3)(svelte@4.0.5):

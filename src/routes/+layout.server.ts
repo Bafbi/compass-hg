@@ -6,7 +6,7 @@ import { AUTH_SECRET } from '$env/static/private';
 
 export const load: LayoutServerLoad = async (event) => {
 	const session = await event.locals.getSession();
-	if (!event.url.pathname.startsWith('/auth/signin') && !session?.user)
+	if (!event.url.pathname.startsWith('/auth') && !session?.user)
 		throw redirect(303, '/auth/signin');
 
 	const token = await getToken({ req: event.request, secret: AUTH_SECRET });

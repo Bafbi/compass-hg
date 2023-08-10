@@ -1,10 +1,73 @@
 import { sql, type InferModel } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { users, accounts, sessions, verificationTokens } from './sqlite-nextauth-adapter';
+import {
+  integer,
+  sqliteTable,
+  text,
+  primaryKey,
+} from "drizzle-orm/sqlite-core";
+import type { AdapterAccount } from "@auth/core/adapters";
 
-export const serviceEnum = ['RH', 'IT'];
-export const statusEnum = ['OPEN', 'CLOSED'];
+const users = sqliteTable("users", {
+  id: text("id").notNull().primaryKey(),
+  name: text("name"),
+  email: text("email").notNull(),
+  emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
+  image: text("image"),
+	is_admin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
+});
+
+const accounts = sqliteTable(
+  "accounts",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").$type<AdapterAccount["type"]>().notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+  },
+  (account) => ({
+    compoundKey: primaryKey(account.provider, account.providerAccountId),
+  })
+);
+
+const sessions = sqliteTable("sessions", {
+  sessionToken: text("sessionToken").notNull().primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+});
+
+const verificationTokens = sqliteTable(
+  "verificationToken",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+  },
+  (vt) => ({
+    compoundKey: primaryKey(vt.identifier, vt.token),
+  })
+);
+
+export const serviceEnum = ['RH', 'IT', 'FINANCE', 'ADMIN'] as const;
+export type Service = typeof serviceEnum[number];
+
+export const statusEnum = ['OPEN', 'CLOSED', 'PENDING'] as const;
+export type Status = typeof statusEnum[number];
+
+export function isEnumValue<T extends string>(enumArray: readonly T[], value: string): value is T {
+  return enumArray.includes(value as T);
+}
 
 const tickets = sqliteTable('tickets', {
 	id: text('id').notNull().primaryKey(),
@@ -25,8 +88,8 @@ const tickets = sqliteTable('tickets', {
 	requester: text('requester')
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	fromService: text('from_service', { enum: serviceEnum as [string, ...string[]] }).notNull(),
-	status: text('status', { enum: statusEnum as [string, ...string[]] }).notNull(),
+	fromService: text('from_service', { enum: serviceEnum }).notNull(),
+	status: text('status', { enum: statusEnum }).notNull(),
 	plannedFor: integer('planned_for', { mode: 'timestamp' })
 });
 
@@ -54,6 +117,8 @@ const labels = sqliteTable('labels', {
 });
 
 export const insertLabelSchema = createInsertSchema(labels);
+export type InsertLabel = InferModel<typeof labels, 'insert'>;
+export type Label = InferModel<typeof labels, 'select'>;
 
 const ticketLabels = sqliteTable('ticket_labels', {
 	ticketId: text('ticket_id')

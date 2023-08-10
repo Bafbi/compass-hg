@@ -3,14 +3,14 @@
 	import "../app.css";
 </script>
 
-<div class="flex flex-col min-h-screen w-screen bg-background">
+<div class="flex flex-col min-h-screen w-full bg-background">
 	<Header />
 
 	<main class="flex-1">
 		<slot />
 	</main>
 
-	<footer class="bottom-0 bg-tertiary">
+	<!-- <footer class="bg-tertiary w-full">
 		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit </p>
-	</footer>
+	</footer> -->
 </div>
