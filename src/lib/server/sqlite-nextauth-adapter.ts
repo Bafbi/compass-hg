@@ -147,9 +147,14 @@ export function SQLiteDrizzleAdapter(
 					)
 				)
 				.get();
-            // eslint-disable-next-line no-debugger
-            debugger;
-			return results?.users ?? null;
+
+			// create a promise that resolves to the user
+			const user = (async () => {
+				return (await results).users;
+			}
+			)();
+
+			return user;
 		},
 		deleteSession(sessionToken) {
 			return (
