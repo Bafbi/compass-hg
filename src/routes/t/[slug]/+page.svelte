@@ -1,5 +1,5 @@
 <script lang="ts">
-  import './md.css';
+	import './md.css';
 
 	export let data;
 	$: ticket = data.ticket;
@@ -10,4 +10,11 @@
 	<meta name="body" content="See ticket details" />
 </svelte:head>
 
-<section>{@html ticket.body?.code}</section>
+<div
+	class=" mx-auto my-4 flex w-5/6 flex-col gap-6 rounded-2xl border-2 border-secondary-container px-6 py-4"
+>
+	<section class="bg-surface-variant flex flex-col gap-2 rounded-xl p-2 shadow-lg">
+		<h1>{ticket.title}</h1>
+	</section>
+	<section>{@html ticket.body?.code}</section>
+</div>

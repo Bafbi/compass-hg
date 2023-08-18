@@ -101,7 +101,7 @@ const labels = sqliteTable('labels', {
 	id: text('id').notNull().primaryKey(),
 	name: text('name').notNull().unique(),
 	description: text('description'),
-	color: text('color').notNull(),
+	color: integer("color").notNull(),
 	createdAt: integer('created_at', { mode: 'timestamp' })
 		.notNull()
 		.default(sql`(strftime('%s', 'now'))`),

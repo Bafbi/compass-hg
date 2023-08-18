@@ -17,7 +17,7 @@ export function createTables(sqliteTable: SQLiteTableFn) {
 		email: text('email').notNull(),
 		emailVerified: integer('emailVerified', { mode: 'timestamp_ms' }),
 		image: text('image'),
-		// is_admin: integer('is_admin', { mode: 'boolean' }).notNull().default(false)
+		is_admin: integer('is_admin', { mode: 'boolean' }).notNull().default(false)
 	});
 
 	const accounts = sqliteTable(
@@ -68,6 +68,7 @@ export function createTables(sqliteTable: SQLiteTableFn) {
 export type DefaultSchema = ReturnType<typeof createTables>;
 
 export function SQLiteDrizzleAdapter(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	client: BaseSQLiteDatabase<any, any>,
 	tableFn = defaultSqliteTableFn
 ): Adapter {

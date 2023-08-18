@@ -1,13 +1,15 @@
 <script>
 	import SelectMulti from '$lib/components/SelectMulti.svelte';
+	import { parseQueryString } from '$lib/filter';
 	import Ticket from './Ticket.svelte';
 	export let data;
-	$: tickets = data.allTickets;
+	$: tickets = data.allTicketsPreview;
 	$: labels = data.allLabels;
 	$: servicesEnum = data.serviceEnum;
 	$: statusEnum = data.statusEnum;
-	$: filters = data.filters ?? { query:''};
+	let filters = data.filters;
 
+	// console.log(data);
 </script>
 
 <svelte:head>
@@ -37,28 +39,18 @@
 			</button>
 		</div>
 		<!-- Filters -->
-		<div>
-			<SelectMulti
-				options={labels.map((label) => {
-					return { id: label.id, name: label.name };
-				})}
-			/>
-			<select
-				class="bg-surface flex-1 appearance-none rounded-md border border-tertiary px-3 py-2 focus:shadow-outline focus:outline-none"
-			>
-				<option value="all">All</option>
-				{#each servicesEnum as service (service)}
-					<option value={service}>{service}</option>
-				{/each}
-			</select>
-			<select
-				class="bg-surface flex-1 appearance-none rounded-md border border-tertiary px-3 py-2 focus:shadow-outline focus:outline-none"
-			>
-				<option value="all">All</option>
-				{#each statusEnum as status (status)}
-					<option value={status}>{status}</option>
-				{/each}
-			</select>
+		<div class="flex gap-4">
+			<!-- Labels -->
+			<details class="">
+				<summary class="bg-primary rounded-xl p-2">Labels</summary>
+				<div class="flex flex-col gap-2 absolute ">
+					{#each labels as label (label.id)}
+						<a href="?q={filters.createAppendQuery("label", label.name)}" class="bg-surface-variant rounded-xl p-2">
+							{label.name}
+						</a>
+					{/each}
+				</div>
+			</details>
 		</div>
 	</section>
 	<!-- Tickets -->

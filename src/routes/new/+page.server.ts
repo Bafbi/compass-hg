@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
-import { insertTicketSchema, tickets, type InsertTicket, serviceEnum } from '$lib/server/schema';
+import { insertTicketSchema, tickets, type InsertTicket, serviceEnum, labels } from '$lib/server/schema';
 import { superValidate } from 'sveltekit-superforms/server';
+import { z } from 'zod';
 
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
@@ -9,15 +10,16 @@ export const load: PageServerLoad = async ({parent}) => {
 	const session = (await parent()).session;
 	console.log('session', session);
 	
+	const allLabels = await db.select().from(labels).all();
 
-	const form = await (session?.user.is_admin ? superValidate(insertTicketFormAdminSchema) : superValidate(insertTicketFormSchema));
+	const form = await (session?.user?.is_admin ? superValidate(insertTicketFormAdminSchema) : superValidate(insertTicketFormSchema));
 
 	// Always return { form } in load and form actions.
-	return { form, serviceEnum };
+	return { form, serviceEnum, allLabels };
 };
 
-const insertTicketFormSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true });
-const insertTicketFormAdminSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true, requester: true });
+const insertTicketFormSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true }).extend({labels: z.array(z.string())});
+const insertTicketFormAdminSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true, requester: true }).extend({labels: z.array(z.string())});
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {

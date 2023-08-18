@@ -2,8 +2,11 @@
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
 	import { superForm } from 'sveltekit-superforms/client';
+	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
+	import MultiSelector from '$lib/components/SelectMulti.svelte';
 
 	export let data;
+	$: labels = data.allLabels;
 	// $: graphClient = data.graphClient;
 
 	// let users = getUsers();
@@ -19,6 +22,8 @@
 	<title>New Ticket - Compass-HG</title>
 	<meta name="body" content="Create new ticket" />
 </svelte:head>
+
+<SuperDebug data={$form} />
 
 <!-- new ticket form -->
 <section>
@@ -59,7 +64,7 @@
 			/>
 			{#if $errors.body}<span class="text-error">{$errors.body}</span>{/if}
 
-			{#if data.session?.user.is_admin}
+			{#if data.session?.user?.is_admin}
 			<label for="requester">Requester</label>
 			<input
 				class="bg-surface w-full appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
@@ -71,6 +76,12 @@
 			/>
 			{#if $errors.requester}<span class="text-error">{$errors.requester}</span>{/if}
 			{/if}
+
+			<!-- labels -->
+			<label for="labels">Labels</label>
+			<MultiSelector bind:options={labels} bind:selectedOptions={$form.labels} />
+
+
 
 			<button type="submit">Submit</button>
 		</form>

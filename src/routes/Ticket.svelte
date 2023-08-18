@@ -3,8 +3,10 @@
 	import githubLogo from '$lib/images/github.svg';
 	import dayjs, { Dayjs } from 'dayjs';
 	import type { TicketPreview } from './proxy+page.server';
+	import Label from '$lib/components/Label.svelte';
 
 	export let ticket: TicketPreview;
+
 </script>
 
 <a href={'t/' + ticket.id}>
@@ -12,8 +14,11 @@
 		class=" relative flex overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg"
 	>
 		<!-- Status indicator -->
-		<span class=" hidden bg-status-open bg-status-closed"></span>
-		<div class="bg-status-{ticket.status.toLocaleLowerCase()} absolute bottom-0 left-0 top-0 w-1" title="Status : {ticket.status.toLocaleLowerCase()}" />
+		<span class=" hidden bg-status-closed bg-status-open" />
+		<div
+			class="bg-status-{ticket.status.toLocaleLowerCase()} absolute bottom-0 left-0 top-0 w-1"
+			title="Status : {ticket.status.toLocaleLowerCase()}"
+		/>
 		<div class="shrink-0">
 			<img class="h-12 w-12" src={githubLogo} alt="ChitChat Logo" />
 		</div>
@@ -35,6 +40,11 @@
 				<span class="">by <strong>{ticket.requester_name}</strong></span>
 				<span class="">from <strong>{ticket.fromService}</strong></span>
 			</div>
+		</div>
+		<div class="flex flex-wrap">
+			{#each ticket.labels as label}
+				<Label {label} />
+			{/each}
 		</div>
 	</div>
 </a>
