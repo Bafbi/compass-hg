@@ -9,19 +9,3 @@
 <div class="my-auto rounded-full px-2 py-1 text-xs label" style={cssVarStyles}>
 	{label.name}
 </div>
-
-<style>
-	@media (prefers-color-scheme: dark) {
-		.label {
-			background-color: var(--dark-color);
-			color: var(--light-color);
-		}
-	}
-
-	@media (prefers-color-scheme: light) {
-		.label {
-			background-color: var(--light-color);
-			color: var(--dark-color);
-		}
-	}
-</style>

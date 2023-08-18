@@ -1,15 +1,11 @@
-<script>
-	import SelectMulti from '$lib/components/SelectMulti.svelte';
-	import { parseQueryString } from '$lib/filter';
+<script lang="ts">
+	import Selector from '$lib/components/Selector.svelte';
+	import { statusEnum } from '$lib/const';
+	import { constructQueryString } from '$lib/filter';
 	import Ticket from './Ticket.svelte';
 	export let data;
 	$: tickets = data.allTicketsPreview;
-	$: labels = data.allLabels;
-	$: servicesEnum = data.serviceEnum;
-	$: statusEnum = data.statusEnum;
-	let filters = data.filters;
-
-	// console.log(data);
+	$: filters = data.filters;
 </script>
 
 <svelte:head>
@@ -29,28 +25,23 @@
 					class="bg-surface w-full appearance-none rounded-md border border-tertiary px-3 py-2 focus:shadow-outline focus:outline-none"
 					type="search"
 					placeholder="Query"
-					value={filters.query}
+					value={constructQueryString(filters)}
 					name="q"
 				/>
 			</form>
 
-			<button class="bg-primary rounded-xl p-2">
-				<a href="new"> Create Ticket </a>
-			</button>
+			<a href="new" class="bg-primary rounded-xl p-2"> Create Ticket </a>
 		</div>
 		<!-- Filters -->
 		<div class="flex gap-4">
 			<!-- Labels -->
-			<details class="">
-				<summary class="bg-primary rounded-xl p-2">Labels</summary>
-				<div class="flex flex-col gap-2 absolute ">
-					{#each labels as label (label.id)}
-						<a href="?q={filters.createAppendQuery("label", label.name)}" class="bg-surface-variant rounded-xl p-2">
-							{label.name}
-						</a>
-					{/each}
-				</div>
-			</details>
+			<!-- <Selector options={data.allLabels} filterName="label" {filters} let:option>
+				{option.id + "   " + option.selected}
+			</Selector> -->
+			<!-- Status -->
+			<Selector options={statusEnum} filterName="is" {filters} let:option>
+				{option.id + "   " + option.selected}
+			</Selector>
 		</div>
 	</section>
 	<!-- Tickets -->
