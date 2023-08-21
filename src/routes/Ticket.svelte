@@ -11,7 +11,7 @@
 
 <a href={'t/' + ticket.id}>
 	<div
-		class=" relative flex overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg"
+		class=" relative flex flex-col sm:flex-row overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg"
 	>
 		<!-- Status indicator -->
 		<span class=" hidden bg-status-closed bg-status-open" />

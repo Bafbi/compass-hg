@@ -1,4 +1,4 @@
-import { isEnumValue, statusEnum, type Service, type Status, serviceEnum } from "./const";
+import { isEnumValue, statusEnum, type Service, type Status, serviceEnum } from './const';
 
 export type TicketsFilters = {
 	service: Service | null;
@@ -6,7 +6,7 @@ export type TicketsFilters = {
 	labels: string[];
 	requester: string | null;
 	search: string[];
-}
+};
 
 type TicketsFiltersKeys = keyof TicketsFilters;
 
@@ -20,7 +20,7 @@ const TicketsFiltersTypes: TicketsFiltersMapping = {
 	is: 'status',
 	label: 'labels',
 	from: 'service',
-	by: 'requester',
+	by: 'requester'
 };
 
 export function getFilterKey<K extends FilterTypeStrings>(filterType: K): TicketsFiltersMapping[K] {
@@ -36,66 +36,77 @@ export function getFilterType<K extends TicketsFiltersKeys>(
 }
 
 export function constructQueryString(filters: TicketsFilters): string {
-    let queryString = "";
+	let queryString = '';
 
-    Object.keys(filters).forEach((key) => {
-        const filterType = getFilterType(key as TicketsFiltersKeys);
-        if (filterType) {
-            
-            if (Array.isArray(filters[key])) {
-                
-                filters[key].forEach((value) => {
-                    queryString += `${filterType}:${value} `;
-                });
-            }
-            else {
-                queryString += `${filterType}:${filters[key]} `;
-            }
-        }
-        else {
-            if (Array.isArray(filters[key])) {
-                filters[key].forEach((value) => {
-                    queryString += `${value} `;
-                });
-            }
-            else {
-                queryString += `${filters[key]} `;
-            }
-        }
-    });
+	Object.keys(filters).forEach((key) => {
+		const filterType = getFilterType(key as TicketsFiltersKeys);
+		if (filterType && filters[key]!) {
+			if (Array.isArray(filters[key])) {
+				filters[key].forEach((value) => {
+					queryString += `${filterType}:${value} `;
+				});
+			} else {
+				queryString += `${filterType}:${filters[key]} `;
+			}
+		} 
+	});
     
-    return queryString;
-  }
+	return queryString;
+}
 
-  export function appendQuery(filters: TicketsFilters, type: FilterTypeStrings, value: string): string {
+export function appendQuery(
+	filters: TicketsFilters,
+	type: FilterTypeStrings,
+	value: string
+): string {
+	const filterKey = getFilterKey(type);
+	const tmpFilters = { ...filters };
+	if (filterKey) {
+		if (Array.isArray(filters[filterKey])) {
+			tmpFilters[filterKey] = [...tmpFilters[filterKey], value];
+		} else {
+			tmpFilters[filterKey] = value;
+		}
+	}
+	return constructQueryString(tmpFilters);
+}
+
+export function removeQuery(
+	filters: TicketsFilters,
+	type: FilterTypeStrings,
+	value: string
+): string {
+	const filterKey = getFilterKey(type);
+	const tmpFilters = { ...filters };
+	if (filterKey) {
+		if (Array.isArray(filters[filterKey])) {
+			tmpFilters[filterKey] = tmpFilters[filterKey].filter((v) => v !== value);
+		} else {
+			tmpFilters[filterKey] = undefined;
+		}
+	}
+	return constructQueryString(tmpFilters);
+}
+
+export function removeMultipleQuery(
+    filters: TicketsFilters,
+    type: FilterTypeStrings,
+    values: string[]
+): string {
     const filterKey = getFilterKey(type);
-    const tmpFilters = {...filters};
+    const tmpFilters = { ...filters };
     if (filterKey) {
         if (Array.isArray(filters[filterKey])) {
-            tmpFilters[filterKey] = [...tmpFilters[filterKey], value];
-        }
-        else {
-            tmpFilters[filterKey] = value;
-        }
-    }
-    return constructQueryString(tmpFilters);
-  }
-  
-    export function removeQuery(filters: TicketsFilters, type: FilterTypeStrings, value: string): string {
-    const filterKey = getFilterKey(type);
-    const tmpFilters = {...filters};
-    if (filterKey) {
-        if (Array.isArray(filters[filterKey])) {
-            tmpFilters[filterKey] = tmpFilters[filterKey].filter((v) => v !== value);
-        }
-        else {
+            tmpFilters[filterKey] = tmpFilters[filterKey].filter((v) => !values.includes(v));
+        } else {
             tmpFilters[filterKey] = undefined;
         }
     }
+    
     return constructQueryString(tmpFilters);
-    }
+}
 
-    /// if one key is present in the query string, it will be added to the filters object.
+/// if one key is present in the query string, it will be added to the filters object.
 /// if there is no keyword, the partie with not keyword is added to the search keyword.
 export const parseQueryString = (query: string): TicketsFilters => {
 	return query.split(' ').reduce(
@@ -103,11 +114,11 @@ export const parseQueryString = (query: string): TicketsFilters => {
 			const [type, value] = query.split(':');
 			switch (type) {
 				case 'is':
-                    console.log("is", value);
-                    
+					console.log('is', value);
+
 					if (isEnumValue(statusEnum, value)) {
-                        console.log("it is");
-                        
+						console.log('it is');
+
 						// acc.status = [...(acc.status || []), value];
 						acc.status = value;
 					}

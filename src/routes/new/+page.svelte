@@ -4,6 +4,7 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 	import MultiSelector from '$lib/components/SelectMulti.svelte';
+	import { serviceEnum } from '$lib/const.js';
 
 	export let data;
 	$: labels = data.allLabels;
@@ -48,7 +49,7 @@
 				bind:value={$form.fromService}
 				{...$constraints.fromService}
 			>
-				{#each data.serviceEnum as service}
+				{#each serviceEnum as service}
 					<option value={service}>{service}</option>
 				{/each}
 			</select>
@@ -65,23 +66,21 @@
 			{#if $errors.body}<span class="text-error">{$errors.body}</span>{/if}
 
 			{#if data.session?.user?.is_admin}
-			<label for="requester">Requester</label>
-			<input
-				class="bg-surface w-full appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
-				name="body"
-				type="search"
-				aria-invalid={$errors.requester ? 'true' : undefined}
-				bind:value={$form.requester}
-				{...$constraints.requester}
-			/>
-			{#if $errors.requester}<span class="text-error">{$errors.requester}</span>{/if}
+				<label for="requester">Requester</label>
+				<input
+					class="bg-surface w-full appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
+					name="body"
+					type="search"
+					aria-invalid={$errors.requester ? 'true' : undefined}
+					bind:value={$form.requester}
+					{...$constraints.requester}
+				/>
+				{#if $errors.requester}<span class="text-error">{$errors.requester}</span>{/if}
 			{/if}
 
 			<!-- labels -->
 			<label for="labels">Labels</label>
 			<MultiSelector bind:options={labels} bind:selectedOptions={$form.labels} />
-
-
 
 			<button type="submit">Submit</button>
 		</form>

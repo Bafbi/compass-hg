@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({parent}) => {
 };
 
 const insertTicketFormSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true }).extend({labels: z.array(z.string())});
-const insertTicketFormAdminSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true, requester: true }).extend({labels: z.array(z.string())});
+const insertTicketFormAdminSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true, requester: true }).extend({labels: z.array(z.string().optional())});
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {

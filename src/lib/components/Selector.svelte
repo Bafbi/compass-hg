@@ -1,34 +1,37 @@
 <script lang="ts">
+	import {
+		type TicketsFilters,
+		type FilterTypeStrings,
+		getFilterKey,
+		removeQuery,
+		appendQuery,
 
-	import { type TicketsFilters, type FilterTypeStrings, getFilterKey, removeQuery, appendQuery } from '$lib/filter';
-	type T = $$Generic<{ id: string }[] | readonly string[]>;
+		removeMultipleQuery
+
+	} from '$lib/filter';
+	type T = $$Generic<{ id: string }[]>;
 	type U = T & { selected: boolean };
 
 	export let filters: TicketsFilters;
 	export let filterName: FilterTypeStrings;
 	export let options: T;
 
+	$: data = options.map((option) => ({
+		...option,
+		selected: filters[getFilterKey(filterName)]?.includes(option.id) ?? false
+	}));
+
 	let open = false;
 	let container: HTMLDivElement;
 	let search = '';
 
-    console.log(options);
-    console.log(filters[getFilterKey(filterName)]);
-    
-    
-    
-	$: dataFiltered = {
-        if options {
+	// uppercase the first letter of the key filter name
+	let title = getFilterKey(filterName).charAt(0).toUpperCase() + getFilterKey(filterName).slice(1);
 
-        }
-    } options
-		.filter((data) => data.id.includes(search))
-		.map((data) => ({
-			...data,
-			selected: Array.isArray(filters[getFilterKey(filterName)]) ? filters[getFilterKey(filterName)]?.includes(data.id) : filters[getFilterKey(filterName)] == data
-		}));
+	$: unselectQuery = removeMultipleQuery(filters, filterName, data
+		.filter((option) => option.selected).map((option) => option.id));
 
-        
+	$: dataFiltered = data.filter((option) => option.id.includes(search));
 </script>
 
 <svelte:window
@@ -37,16 +40,23 @@
 	}}
 />
 
-<details class="" bind:open>
-	<summary class="bg-primary rounded-xl p-2">Labels</summary>
+<details class="h-full" bind:open>
+	<summary class="bg-secondary text-sm rounded-xl p-2">{title}</summary>
 	<div
 		class="bg-tertiary-container absolute z-10 flex flex-col gap-2 rounded-md p-2"
 		bind:this={container}
 	>
 		<header>
-			<span>filter by labels</span>
+			<span>filter by {title}</span>
 		</header>
 		<input type="search" bind:value={search} />
+
+		<a
+			class="bg-primary rounded-xl p-2"
+			href="?q={unselectQuery}"
+		>
+			Unselect
+		</a>
 
 		{#each dataFiltered as option (option.id)}
 			{#if option.selected}
