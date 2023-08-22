@@ -28,10 +28,28 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 	const filters = parseQueryString(url.searchParams.get('q') || '');
 	console.log(filters);
 
+// 	SELECT
+//     t.*,
+//     GROUP_CONCAT(DISTINCT l.name) AS matching_labels
+// FROM tickets AS t
+// JOIN (
+//     SELECT
+//         tl.ticket_id
+//     FROM ticket_labels AS tl
+//     JOIN labels AS l ON tl.label_id = l.id
+//     WHERE l.name IN ('label1', 'label2', 'label3')
+//     GROUP BY tl.ticket_id
+//     HAVING COUNT(DISTINCT l.name) = 3
+// ) AS matching_tickets ON t.id = matching_tickets.ticket_id
+// LEFT JOIN ticket_labels AS tl ON t.id = tl.ticket_id
+// LEFT JOIN labels AS l ON tl.label_id = l.id
+// GROUP BY t.id;
+
 	const allTickets = await db
 		.select({
 			ticket: { ...tickets },
-			user: { name: users.name }
+			user: { name: users.name },
+			labels : sql<string | null>`group_concat(${ticketLabels.labelId}, ',')`
 		})
 		.from(tickets)
 		.where(
@@ -48,35 +66,49 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 		)
 		.innerJoin(users, eq(tickets.requester, users.id))
 		.leftJoin(ticketLabels, eq(tickets.id, ticketLabels.ticketId))
-		.groupBy(tickets.id, users.name)
+		.groupBy(tickets.id)
+		.having(filters.labels.length !== 0 ? sql`count(${ticketLabels.labelId}) = ${filters.labels.length}`: sql`1=1`)
 		.orderBy(tickets.createdAt)
 		.all();
 
-	const ticketsLabels = await db
-		.select({
-			ticketId: ticketLabels.ticketId,
-			label: { ...labels }
-		})
-		.from(ticketLabels)
-		.innerJoin(labels, eq(ticketLabels.labelId, labels.id))
-		.all();
+	console.log(allTickets);
+	
 
-	//   console.log(ticketsLabels);
+	// const ticketsLabels = await db
+	// 	.select({
+	// 		ticketId: ticketLabels.ticketId,
+	// 		label: { ...labels }
+	// 	})
+	// 	.from(ticketLabels)
+	// 	.innerJoin(labels, eq(ticketLabels.labelId, labels.id))
+	// 	.all();
 
-	const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
-		const labels = ticketsLabels
-			.filter((label) => label.ticketId === ticket.ticket.id)
-			.map((label) => label.label);
-		return {
-			...ticket.ticket,
-			requester_name: ticket.user.name,
-			labels: labels
-		};
-	});
+	// //   console.log(ticketsLabels);
+
+	// const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
+	// 	const labels = ticketsLabels
+	// 		.filter((label) => label.ticketId === ticket.ticket.id)
+	// 		.map((label) => label.label);
+	// 	return {
+	// 		...ticket.ticket,
+	// 		requester_name: ticket.user.name,
+	// 		labels: labels
+	// 	};
+	// });
 
 	// console.log(allTicketsPreview);
 
 	const allLabels = await db.select().from(labels).all();
+
+	const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
+		const labels = ticket.labels?.split(',').map(label => allLabels.find(l => l.id === label)).filter(l => l !== undefined) as Label[];
+		return {
+			...ticket.ticket,
+			requester_name: ticket.user.name,
+			labels: labels || []
+		};
+	});
+
 
 	return {
 		allTicketsPreview,
