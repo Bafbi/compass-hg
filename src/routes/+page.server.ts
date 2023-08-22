@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { eq, sql, and, like } from 'drizzle-orm';
+import { eq, sql, and, like, inArray } from 'drizzle-orm';
 import {
 	tickets,
 	users,
@@ -42,11 +42,14 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 						: sql`1=1`
 					: eq(tickets.requester, session.user.id),
 				filters.service ? eq(tickets.fromService, filters.service) : sql`1=1`,
-				filters.status ? eq(tickets.status, filters.status) : sql`1=1`
+				filters.status ? eq(tickets.status, filters.status) : sql`1=1`,
+				filters.labels.length !== 0 ? inArray(ticketLabels.labelId, filters.labels) : sql`1=1`
 			)
 		)
 		.innerJoin(users, eq(tickets.requester, users.id))
+		.leftJoin(ticketLabels, eq(tickets.id, ticketLabels.ticketId))
 		.groupBy(tickets.id, users.name)
+		.orderBy(tickets.createdAt)
 		.all();
 
 	const ticketsLabels = await db

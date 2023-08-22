@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { insertTicketSchema, tickets, type InsertTicket, serviceEnum, labels } from '$lib/server/schema';
+import { insertTicketSchema, tickets, type InsertTicket, labels, ticketLabels, users } from '$lib/server/schema';
 import { superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
 
@@ -11,15 +11,15 @@ export const load: PageServerLoad = async ({parent}) => {
 	console.log('session', session);
 	
 	const allLabels = await db.select().from(labels).all();
+	const allUsers = await db.select().from(users).all();
 
-	const form = await (session?.user?.is_admin ? superValidate(insertTicketFormAdminSchema) : superValidate(insertTicketFormSchema));
+	const form = await superValidate(insertTicketFormSchema);
 
 	// Always return { form } in load and form actions.
-	return { form, serviceEnum, allLabels };
+	return { form, allLabels, allUsers };
 };
 
-const insertTicketFormSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true }).extend({labels: z.array(z.string())});
-const insertTicketFormAdminSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true, requester: true }).extend({labels: z.array(z.string().optional())});
+const insertTicketFormSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true }).extend({labels: z.string().array(), requester: z.string().optional()});
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
@@ -31,13 +31,20 @@ export const actions: Actions = {
 		const ticketData: InsertTicket = {
 			// generate an uuid
 			id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-			...form.data,
+			title: form.data.title,
+			fromService: form.data.fromService,
+			body: form.data.body,
 			createdBy: session?.user.id,
 			updatedBy: session?.user.id,
 			status: 'OPEN',
-			requester: session?.user.id
+			requester: (session.user.is_admin && form.data.requester) ? form.data.requester : session?.user.id
 		};
+		// console.log('ticketData', ticketData);
+		
 		db.insert(tickets).values(ticketData).run();
+		form.data.labels.forEach(label => {
+			db.insert(ticketLabels).values({ticketId: ticketData.id, labelId: label}).run();
+		});
 		throw redirect(303, `/t/${ticketData.id}`);
 	}
 };

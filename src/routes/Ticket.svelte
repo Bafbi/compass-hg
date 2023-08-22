@@ -11,7 +11,7 @@
 
 <a href={'t/' + ticket.id}>
 	<div
-		class=" relative flex flex-col sm:flex-row overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg"
+		class=" relative flex flex-col sm:flex-row gap-2 overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg"
 	>
 		<!-- Status indicator -->
 		<span class=" hidden bg-status-closed bg-status-open" />
@@ -19,7 +19,7 @@
 			class="bg-status-{ticket.status.toLocaleLowerCase()} absolute bottom-0 left-0 top-0 w-1"
 			title="Status : {ticket.status.toLocaleLowerCase()}"
 		/>
-		<div class="shrink-0">
+		<div class="shrink-0 hidden sm:block">
 			<img class="h-12 w-12" src={githubLogo} alt="ChitChat Logo" />
 		</div>
 		<div class="flex-1 overflow-hidden">

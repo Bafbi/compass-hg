@@ -16,7 +16,7 @@
 </svelte:head>
 
 <div
-	class=" mx-auto my-4 flex w-5/6 flex-col gap-6 rounded-2xl border-2 border-secondary-container px-6 py-4"
+	class=" mx-auto my-4 flex w-full md:w-10/12 flex-col gap-6 rounded-2xl border-2 border-secondary-container p-2  md:px-6 md:py-4"
 >
 	<!-- ToolBar -->
 	<section class="bg-surface-variant rounded-xl p-2 shadow-lg">
@@ -54,7 +54,6 @@
 	<!-- Tickets -->
 	<section class="flex flex-col gap-4">
 		{#each tickets as ticket (ticket.id)}
-			<Ticket {ticket} />
 			<Ticket {ticket} />
 		{/each}
 	</section>
