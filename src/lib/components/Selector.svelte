@@ -50,6 +50,7 @@
 
 <svelte:window
 	on:click={(e) => {
+		
 		if (!container.contains(e.target)) open = false;
 	}}
 />

@@ -10,7 +10,7 @@
 		<slot />
 	</main>
 
-	<!-- <footer class="bg-tertiary w-full">
+	<footer class="bg-tertiary w-full">
 		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit </p>
-	</footer> -->
+	</footer>
 </div>

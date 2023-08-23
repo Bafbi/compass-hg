@@ -55,4 +55,7 @@
   img {
     @apply mx-auto;
   }
+  /* code {
+    @apply bg-tertiary-container rounded-md px-1;
+  } */
 }
