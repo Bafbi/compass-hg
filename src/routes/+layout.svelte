@@ -3,7 +3,7 @@
 	import "../app.css";
 </script>
 
-<div class="flex flex-col min-h-screen w-full bg-background">
+<div class="flex flex-col min-h-screen w-full bg-background overflow-y-hidden">
 	<Header />
 
 	<main class="flex-1">

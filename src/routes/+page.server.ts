@@ -61,7 +61,8 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 					: eq(tickets.requester, session.user.id),
 				filters.service ? eq(tickets.fromService, filters.service) : sql`1=1`,
 				filters.status ? eq(tickets.status, filters.status) : sql`1=1`,
-				filters.labels.length !== 0 ? inArray(ticketLabels.labelId, filters.labels) : sql`1=1`
+				filters.labels.length !== 0 ? inArray(ticketLabels.labelId, filters.labels) : sql`1=1`,
+				filters.search ? like(tickets.title, `%${filters.search.join("%")}%`) : sql`1=1`
 			)
 		)
 		.innerJoin(users, eq(tickets.requester, users.id))
@@ -74,40 +75,40 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 	console.log(allTickets);
 	
 
-	// const ticketsLabels = await db
-	// 	.select({
-	// 		ticketId: ticketLabels.ticketId,
-	// 		label: { ...labels }
-	// 	})
-	// 	.from(ticketLabels)
-	// 	.innerJoin(labels, eq(ticketLabels.labelId, labels.id))
-	// 	.all();
+	const ticketsLabels = await db
+		.select({
+			ticketId: ticketLabels.ticketId,
+			label: { ...labels }
+		})
+		.from(ticketLabels)
+		.innerJoin(labels, eq(ticketLabels.labelId, labels.id))
+		.all();
 
-	// //   console.log(ticketsLabels);
+	//   console.log(ticketsLabels);
 
-	// const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
-	// 	const labels = ticketsLabels
-	// 		.filter((label) => label.ticketId === ticket.ticket.id)
-	// 		.map((label) => label.label);
-	// 	return {
-	// 		...ticket.ticket,
-	// 		requester_name: ticket.user.name,
-	// 		labels: labels
-	// 	};
-	// });
+	const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
+		const labels = ticketsLabels
+			.filter((label) => label.ticketId === ticket.ticket.id)
+			.map((label) => label.label);
+		return {
+			...ticket.ticket,
+			requester_name: ticket.user.name,
+			labels: labels
+		};
+	});
 
 	// console.log(allTicketsPreview);
 
 	const allLabels = await db.select().from(labels).all();
 
-	const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
-		const labels = ticket.labels?.split(',').map(label => allLabels.find(l => l.id === label)).filter(l => l !== undefined) as Label[];
-		return {
-			...ticket.ticket,
-			requester_name: ticket.user.name,
-			labels: labels || []
-		};
-	});
+	// const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
+	// 	const labels = ticket.labels?.split(',').map(label => allLabels.find(l => l.id === label)).filter(l => l !== undefined) as Label[];
+	// 	return {
+	// 		...ticket.ticket,
+	// 		requester_name: ticket.user.name,
+	// 		labels: labels || []
+	// 	};
+	// });
 
 
 	return {
