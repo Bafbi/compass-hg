@@ -1,16 +1,19 @@
 <script>
+	import { Toasts, toast } from 'svoast';
 	import Header from './Header.svelte';
-	import "../app.css";
+	import '../app.css';
 </script>
 
-<div class="flex flex-col min-h-screen w-full bg-background overflow-y-hidden">
+<Toasts position="top-right" />
+
+<div class="bg-background flex min-h-screen w-full flex-col overflow-y-hidden">
 	<Header />
 
-	<main class="flex-1">
+	<main class="flex flex-1">
 		<slot />
 	</main>
 
 	<footer class="bg-tertiary w-full">
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit </p>
+		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
 	</footer>
 </div>

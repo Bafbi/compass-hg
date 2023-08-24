@@ -58,4 +58,7 @@
   /* code {
     @apply bg-tertiary-container rounded-md px-1;
   } */
+  hr {
+    @apply my-4;
+  }
 }

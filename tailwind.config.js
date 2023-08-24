@@ -10,7 +10,9 @@ export default withMaterialColors({
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 }, {
   primary: '#506546',
 });

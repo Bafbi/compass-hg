@@ -1,13 +1,18 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { superForm } from 'sveltekit-superforms/client';
-	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 	import { serviceEnum } from '$lib/const.js';
+	import { marked } from 'marked';
+	import '$lib/style/md.css';
+	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
+	import { toast } from 'svoast';
 
 	export let data;
 	$: labels = data.allLabels;
 	$: users = data.allUsers;
-	// $: graphClient = data.graphClient;
+	$: graphClient = data.graphClient;
+
+	let previewOpen = false;
 
 	// let users = getUsers();
 	// async function getUsers() {
@@ -23,8 +28,12 @@
 	<meta name="body" content="Create new ticket" />
 </svelte:head>
 
-<div class=" min-h-full">
-	<form method="POST" class="flex flex-1 flex-grow flex-col items-center gap-6" use:enhance>
+<div class=" flex flex-grow p-4">
+	<form
+		method="POST"
+		class="flex flex-grow flex-col items-center gap-6"
+		use:enhance
+	>
 		<!-- Title -->
 		<div class="w-11/12">
 			<label for="title">Title</label>
@@ -80,7 +89,7 @@
 				<div>
 					<label for="labels">Labels</label>
 
-					<details>
+					<details class="relative">
 						<summary
 							class="bg-surface w-full appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
 							>{$form.labels}</summary
@@ -90,7 +99,7 @@
 								name="labels"
 								multiple
 								bind:value={$form.labels}
-								class="focus:border-blue-300 bg-surface absolute rounded border p-2 focus:outline-none focus:ring"
+								class="focus:border-blue-300 bg-surface absolute w-full rounded border p-2 focus:outline-none focus:ring"
 							>
 								{#each labels as label}
 									<option value={label.id}>{label.name}</option>
@@ -102,18 +111,32 @@
 			</div>
 			<div class="flex flex-grow flex-col">
 				<label for="body">Body</label>
-				<textarea
-					class="bg-surface w-full flex-1 appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
-					name="body"
-					aria-invalid={$errors.body ? 'true' : undefined}
-					bind:value={$form.body}
-					{...$constraints.body}
-				/>
-				{#if $errors.body}<span class="text-error">{$errors.body}</span>{/if}
+				<div>
+					<button type="button" on:click={() => (previewOpen = true)}>Preview</button>
+					<button type="button" on:click={() => (previewOpen = false)}>Raw</button>
+				</div>
+				{#if previewOpen}
+					<div
+						class="markdown bg-surface w-full flex-1 appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
+					>
+						{@html marked($form.body)}
+					</div>
+				{:else}
+					<textarea
+						class="bg-surface w-full flex-1 appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
+						name="body"
+						aria-invalid={$errors.body ? 'true' : undefined}
+						bind:value={$form.body}
+						{...$constraints.body}
+					/>
+					{#if $errors.body}<span class="text-error">{$errors.body}</span>{/if}
+				{/if}
 			</div>
 		</div>
 
-		<button class="!bg-primary rounded-xl p-2" type="submit">Submit</button>
+		<button class="!bg-primary rounded-xl p-2" type="submit" on:click={() => (previewOpen = false)}
+			>Submit</button
+		>
 	</form>
 	<!-- <SuperDebug data={$form} /> -->
 </div>

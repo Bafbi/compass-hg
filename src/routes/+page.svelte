@@ -33,7 +33,7 @@
 			</form>
 
 		<!-- Filters -->
-		<div class="flex gap-2">
+		<div class="flex flex-row gap-2">
 			<!-- Labels -->
 			<Selector options={data.allLabels} filterName="label" {filters} let:option>
 				{option.id + "   " + option.selected}

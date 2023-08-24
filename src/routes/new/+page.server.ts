@@ -41,7 +41,7 @@ export const actions: Actions = {
 		};
 		// console.log('ticketData', ticketData);
 		
-		db.insert(tickets).values(ticketData).run();
+		await db.insert(tickets).values(ticketData).run();
 		form.data.labels.forEach(label => {
 			db.insert(ticketLabels).values({ticketId: ticketData.id, labelId: label}).run();
 		});

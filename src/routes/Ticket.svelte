@@ -41,7 +41,7 @@
 				<span class="">from <strong>{ticket.fromService}</strong></span>
 			</div>
 		</div>
-		<div class="flex flex-wrap">
+		<div class="flex flex-row flex-wrap">
 			{#each ticket.labels as label}
 				<Label {label} />
 			{/each}

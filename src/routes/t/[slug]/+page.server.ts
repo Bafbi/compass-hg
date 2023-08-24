@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { tickets, users, type Ticket } from '$lib/server/schema';
 import { compile } from 'mdsvex';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
+import remarkBreaks from 'remark-breaks';
 
 import type { PageServerLoad } from './$types';
 
@@ -25,10 +26,15 @@ export const load: PageServerLoad = async ({ params }) => {
 		.innerJoin(users, eq(tickets.createdBy, users.id))
 		.get();
 
+	console.log(selectTicket.ticket.body);
+
 	const ticket = {
 		...selectTicket.ticket,
 		raw: selectTicket.ticket.body,
 		body: await compile(selectTicket.ticket.body, {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			remarkPlugins: [[remarkBreaks]],
 			rehypePlugins: [
 				[
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -36,7 +42,7 @@ export const load: PageServerLoad = async ({ params }) => {
 					rehypeSanitize,
 					{
 						...defaultSchema,
-						tagNames: [...defaultSchema.tagNames ?? [], 'details'],
+						tagNames: [...(defaultSchema.tagNames ?? []), 'details']
 					}
 				]
 			]

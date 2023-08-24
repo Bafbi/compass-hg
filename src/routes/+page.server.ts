@@ -72,7 +72,7 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 		.orderBy(tickets.createdAt)
 		.all();
 
-	console.log(allTickets);
+	// console.log(allTickets);
 	
 
 	const ticketsLabels = await db

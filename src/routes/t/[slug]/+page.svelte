@@ -1,6 +1,6 @@
 <script lang="ts">
-	import './md.css';
-	import '$lib/style/prism.css'
+	import '$lib/style/md.css';
+	import '$lib/style/prism.css';
 
 	export let data;
 	$: ticket = data.ticket;
@@ -13,23 +13,32 @@
 	<meta name="body" content="See ticket details" />
 </svelte:head>
 
-<div
-	class=" mx-auto my-4 flex w-5/6 flex-col gap-6 rounded-2xl border-2 border-secondary-container px-6 py-4"
->
-	<section class="bg-surface-variant flex flex-col gap-2 rounded-xl p-2 shadow-lg">
-		<h1>{ticket.title}</h1>
-	</section>
-	<section>
-		<!-- Toolbar -->
+<div class=" mx-4 my-12 flex flex-grow flex-row justify-center gap-6">
+	<div class=" flex max-w-3xl flex-1 flex-col gap-6">
+		<h1 class="bg-surface-variant rounded-xl p-2 shadow-lg">{ticket.title}</h1>
+
+		<section
+			class=" flex-1 overflow-y-scroll rounded-2xl border-2 border-secondary-container px-6 py-4 scrollbar-none"
+		>
+			{#if raw}
+				{ticket.raw}
+			{:else}
+				{@html ticket.body?.code}
+			{/if}
+		</section>
+	</div>
+	<div class=" flex w-72 flex-col gap-6 rounded-2xl border-2 border-secondary-container px-6 py-4">
 		<div>
-			<button on:click={() => raw = !raw}>
-				Raw
-			</button>
+			<span>Service</span>
+			<span>{ticket.fromService}</span>
 		</div>
-		{#if raw}
-		{ticket.raw}
-		{:else}
-		{@html ticket.body?.code}
-		{/if}
-	</section>
+		<div>
+			<span>Status</span>
+			<span>{ticket.status}</span>
+		</div>
+		<div>
+			<span>Planned for</span>
+			<span>{ticket.plannedFor}</span>
+		</div>
+	</div>
 </div>
