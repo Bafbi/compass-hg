@@ -45,17 +45,17 @@
 	<body>
 		<div class="container">
 			<h1>Nouveau Ticket Créé</h1>
-			<p>Bonjour {SubmitterName},</p>
+			<p>Bonjour {requester},</p>
 			<p>Votre ticket avec les détails suivants a été créé avec succès :</p>
 			<ul>
-				<li><strong>ID du Ticket :</strong> {TicketID}</li>
-				<li><strong>Titre :</strong> {TicketTitle}</li>
+				<li><strong>ID du Ticket :</strong> {{id}}</li>
+				<li><strong>Titre :</strong> {{title}}</li>
 				<li><strong>Contenu :</strong></li>
 			</ul>
-			<div class="ticket-content">{TicketBody}</div>
+			<div class="ticket-content">{{body}}</div>
 			<ul>
-				<li><strong>Date de Création :</strong> {TicketCreationDate}</li>
-				<li><strong>Statut :</strong> {TicketLifeStatus}</li>
+				<li><strong>Date de Création :</strong> {{created_at}}</li>
+				<li><strong>Statut :</strong> {{status}}</li>
 			</ul>
 			<p>
 				Nous examinerons votre ticket dès que possible.

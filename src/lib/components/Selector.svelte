@@ -34,7 +34,6 @@
 
 	$: if (dialog) container = dialog.firstElementChild as HTMLElement;
 
-	$: console.log(dialog);
 
 	// uppercase the first letter of the key filter name
 	let title = getFilterKey(filterName).charAt(0).toUpperCase() + getFilterKey(filterName).slice(1);

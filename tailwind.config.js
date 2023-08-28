@@ -4,10 +4,9 @@ export default withMaterialColors({
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
-      colors: {
-        "status-open": '#506546',
-        "status-closed": '#a54650',
-      }
+      // fontFamily: {
+      //   'sans': ['Roboto', 'sans-serif'],
+      // },
     },
   },
   plugins: [

@@ -28,7 +28,7 @@ export const load: PageServerLoad = async () => {
 };
 
 const insertTicketFormSchema = insertTicketSchema
-	.pick({ title: true, fromService: true, body: true })
+	.pick({ title: true, fromService: true, body: true, notify: true })
 	.extend({ labels: z.string().array(), requester: z.string().optional() });
 
 export const actions: Actions = {
@@ -47,6 +47,7 @@ export const actions: Actions = {
 			createdBy: session?.user.id,
 			updatedBy: session?.user.id,
 			status: 'OPEN',
+			notify: form.data.notify,
 			requester:
 				session.user.is_admin && form.data.requester ? form.data.requester : session?.user.id
 		};
@@ -64,7 +65,7 @@ export const actions: Actions = {
 			await db.select().from(accounts).where(eq(accounts.userId, session?.user.id)).get()
 		).access_token;
 		// const token = (await getToken({ req: request, secret: AUTH_SECRET }))?.accessToken;
-		console.log('token', token);
+		// console.log('token', token);
 
 		if (token) {
 			const requesterEmail = (
@@ -73,8 +74,9 @@ export const actions: Actions = {
 			console.log('requesterEmail', requesterEmail);
 
 			const email = emailTemplate;
+			const createdTicketData = { ...ticketData, created_at: new Date().toLocaleString() };
 			// replace placeholders in email template
-			Object.entries(ticketData).forEach(([key, value]) => {
+			Object.entries(createdTicketData).forEach(([key, value]) => {
 				email.replace(`{{${key}}}`, value?.toString() || '');
 			});
 
@@ -98,9 +100,8 @@ export const actions: Actions = {
 				}, (error, response) => {
 					if (error.statusCode === 401) {
 						console.log('token expired');
-
 					}
-					console.log("just try to send mail", error, response);
+					// console.log("just try to send mail", error, response);
 				}
 					).catch((error) => {
 						console.log(error);

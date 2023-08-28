@@ -26,20 +26,19 @@ export const try_refresh_token = async (userId: string): Promise<boolean> => {
 		.where(eq(accounts.userId, userId))
 		.get();
 
-    console.log('account', account);
-    console.log(account.expires_at, ">", Date.now(), account.expires_at > Date.now(), account.expires_at - Date.now());
-    
+	// console.log('account', account);
+	// console.log(account.expires_at, ">", Date.now(), account.expires_at > Date.now(), account.expires_at - Date.now());
 
 	// quit if no refresh token or expires_at is in the future
 	if (!account.refresh_token || !account.expires_at || account.expires_at > Date.now()) {
-        console.log('no refresh token or expires_at is in the future');
-        
-        return false;
-    } 
+		console.log('no refresh token or expires_at is in the future');
 
-    console.log('fetch');
-    
-	fetch(
+		return false;
+	}
+
+	// console.log('fetch');
+
+	await fetch(
 		'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token'.replace(
 			'{tenant}',
 			AZUREAD_TENANT_ID
@@ -56,26 +55,26 @@ export const try_refresh_token = async (userId: string): Promise<boolean> => {
 				refresh_token: account.refresh_token
 			})
 		}
-	).then(async (res) => {
-        console.log('res', res);
-        if (res.ok) {
-            const data = await res.json();
-            console.log('data', data);
-            await db
-                .update(accounts)
-                .set({
-                    access_token: data.access_token,
-                    refresh_token: data.refresh_token,
-                    expires_at: Date.now() + data.expires_in * 1000,
-                    id_token: data.id_token
-                })
-                .where(eq(accounts.userId, userId))
-                .run();
-            return true;
-        }
-    }).catch((err) => {
-        console.error(err);
-        return false;
-    });
-    return false;
+	)
+		.then(async (res) => {
+			// console.log('res', res);
+			if (res.ok) {
+				const data = await res.json();
+				// console.log('data', data);
+				await db
+					.update(accounts)
+					.set({
+						access_token: data.access_token,
+						refresh_token: data.refresh_token,
+						expires_at: Date.now() + data.expires_in * 1000,
+						id_token: data.id_token
+					})
+					.where(eq(accounts.userId, userId))
+					.run();
+			}
+		})
+		.catch((err) => {
+			console.error(err);
+		});
+	return true;
 };

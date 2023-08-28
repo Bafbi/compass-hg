@@ -86,7 +86,8 @@ const tickets = sqliteTable('tickets', {
 		.references(() => users.id, { onDelete: 'cascade' }),
 	fromService: text('from_service', { enum: serviceEnum }).notNull(),
 	status: text('status', { enum: statusEnum }).notNull(),
-	plannedFor: integer('planned_for', { mode: 'timestamp' })
+	plannedFor: integer('planned_for', { mode: 'timestamp' }),
+	notify: integer('notify', { mode: 'boolean' }).notNull().default(false)
 });
 
 export const insertTicketSchema = createInsertSchema(tickets);

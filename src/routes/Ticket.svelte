@@ -14,9 +14,9 @@
 		class=" relative flex flex-col sm:flex-row gap-2 overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg"
 	>
 		<!-- Status indicator -->
-		<span class=" hidden bg-status-closed bg-status-open" />
 		<div
-			class="bg-status-{ticket.status.toLocaleLowerCase()} absolute bottom-0 left-0 top-0 w-1"
+			data-status={ticket.status}
+			class=" absolute bottom-0 left-0 top-0 w-1"
 			title="Status : {ticket.status.toLocaleLowerCase()}"
 		/>
 		<div class="shrink-0 hidden sm:block">
@@ -48,3 +48,15 @@
 		</div>
 	</div>
 </a>
+
+<style>
+	div[data-status='OPEN'] {
+		background-color: #10b981;
+	}
+	div[data-status='CLOSED'] {
+		background-color: #ef4444;
+	}
+	div[data-status='PENDING'] {
+		background-color: #f59e0b;
+	}
+</style>
