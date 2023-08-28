@@ -6,11 +6,12 @@
 	import '$lib/style/md.css';
 	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 	import { toast } from 'svoast';
+	import { base } from '$app/paths';
 
 	export let data;
 	$: labels = data.allLabels;
 	$: users = data.allUsers;
-	$: graphClient = data.graphClient;
+	// $: graphClient = data.graphClient;
 
 	let previewOpen = false;
 
@@ -29,11 +30,7 @@
 </svelte:head>
 
 <div class=" flex flex-grow p-4">
-	<form
-		method="POST"
-		class="flex flex-grow flex-col items-center gap-6"
-		use:enhance
-	>
+	<form method="POST" class="flex flex-grow flex-col items-center gap-6 font-mono" use:enhance>
 		<!-- Title -->
 		<div class="w-11/12">
 			<label for="title">Title</label>
@@ -111,26 +108,35 @@
 			</div>
 			<div class="flex flex-grow flex-col">
 				<label for="body">Body</label>
-				<div>
-					<button type="button" on:click={() => (previewOpen = true)}>Preview</button>
-					<button type="button" on:click={() => (previewOpen = false)}>Raw</button>
-				</div>
-				{#if previewOpen}
-					<div
-						class="markdown bg-surface w-full flex-1 appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
-					>
-						{@html marked($form.body)}
+				<div
+					class="bg-surface flex flex-1 appearance-none flex-col rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
+				>
+					<div class="h-fit mb-1">
+						<div class=" w-fit rounded-xl overflow-hidden">
+							<span class=" hidden bg-secondary bg-secondary-container"></span>
+							<button type="button" class="{previewOpen ? "bg-secondary" : "bg-secondary-container"} px-2 py-1" on:click={() => (previewOpen = true)}>Preview</button>
+							<button type="button" class="{!previewOpen ? "bg-secondary" : "bg-secondary-container"} px-2 py-1" on:click={() => (previewOpen = false)}>Raw</button>
+						</div>
 					</div>
-				{:else}
-					<textarea
-						class="bg-surface w-full flex-1 appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
-						name="body"
-						aria-invalid={$errors.body ? 'true' : undefined}
-						bind:value={$form.body}
-						{...$constraints.body}
-					/>
-					{#if $errors.body}<span class="text-error">{$errors.body}</span>{/if}
-				{/if}
+
+					<div class="bg-surface-variant flex-1 rounded-lg">
+						{#if previewOpen}
+							<div class=" h-full w-full border-primary bg-transparent p-2 outline-tertiary font-sans">
+								{@html marked($form.body)}
+							</div>
+						{:else}
+							<textarea
+								class=" h-full w-full border-primary bg-transparent p-2 outline-tertiary"
+								name="body"
+								aria-invalid={$errors.body ? 'true' : undefined}
+								bind:value={$form.body}
+								placeholder="Content of the ticket"
+								{...$constraints.body}
+							/>
+							{#if $errors.body}<span class="text-error">{$errors.body}</span>{/if}
+						{/if}
+					</div>
+				</div>
 			</div>
 		</div>
 

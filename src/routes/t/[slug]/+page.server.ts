@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		.innerJoin(users, eq(tickets.createdBy, users.id))
 		.get();
 
-	console.log(selectTicket.ticket.body);
+	// console.log(selectTicket.ticket.body);
 
 	const ticket = {
 		...selectTicket.ticket,

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Nouveau Ticket Créé</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 0;
+				padding: 20px;
+				background-color: #f4f4f4;
+			}
+			.container {
+				max-width: 600px;
+				margin: 0 auto;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 5px;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			}
+			.ticket-content {
+				border: 1px solid #ddd;
+				padding: 10px;
+				background-color: #f9f9f9;
+				border-radius: 5px;
+			}
+			h1 {
+				color: #333;
+			}
+			ul {
+				list-style-type: none;
+				padding: 0;
+			}
+			ul li {
+				margin-bottom: 10px;
+			}
+			strong {
+				color: #555;
+			}
+			p {
+				color: #777;
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Nouveau Ticket Créé</h1>
+			<p>Bonjour {SubmitterName},</p>
+			<p>Votre ticket avec les détails suivants a été créé avec succès :</p>
+			<ul>
+				<li><strong>ID du Ticket :</strong> {TicketID}</li>
+				<li><strong>Titre :</strong> {TicketTitle}</li>
+				<li><strong>Contenu :</strong></li>
+			</ul>
+			<div class="ticket-content">{TicketBody}</div>
+			<ul>
+				<li><strong>Date de Création :</strong> {TicketCreationDate}</li>
+				<li><strong>Statut :</strong> {TicketLifeStatus}</li>
+			</ul>
+			<p>
+				Nous examinerons votre ticket dès que possible.
+			</p>
+			<p>Cordialement,<br />Votre IT de Holweg</p>
+		</div>
+	</body>
+</html>

@@ -40,6 +40,9 @@ const accounts = sqliteTable(
   })
 );
 
+export type InsertAccount = InferModel<typeof accounts, "insert">;
+
+
 const sessions = sqliteTable("sessions", {
   sessionToken: text("sessionToken").notNull().primaryKey(),
   userId: text("userId")

@@ -1,15 +1,23 @@
 import { db } from '$lib/server/db';
-import { insertTicketSchema, tickets, type InsertTicket, labels, ticketLabels, users } from '$lib/server/schema';
+import {
+	insertTicketSchema,
+	tickets,
+	type InsertTicket,
+	labels,
+	ticketLabels,
+	users,
+	accounts
+} from '$lib/server/schema';
 import { superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
+import { eq } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
+import emailTemplate from './email.template.html?raw';
+import { graph, try_refresh_token } from '$lib/graph';
 
-export const load: PageServerLoad = async ({parent}) => {
-	const session = (await parent()).session;
-	console.log('session', session);
-	
+export const load: PageServerLoad = async () => {
 	const allLabels = await db.select().from(labels).all();
 	const allUsers = await db.select().from(users).all();
 
@@ -19,7 +27,9 @@ export const load: PageServerLoad = async ({parent}) => {
 	return { form, allLabels, allUsers };
 };
 
-const insertTicketFormSchema = insertTicketSchema.pick({ title: true, fromService: true, body: true }).extend({labels: z.string().array(), requester: z.string().optional()});
+const insertTicketFormSchema = insertTicketSchema
+	.pick({ title: true, fromService: true, body: true })
+	.extend({ labels: z.string().array(), requester: z.string().optional() });
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
@@ -37,14 +47,65 @@ export const actions: Actions = {
 			createdBy: session?.user.id,
 			updatedBy: session?.user.id,
 			status: 'OPEN',
-			requester: (session.user.is_admin && form.data.requester) ? form.data.requester : session?.user.id
+			requester:
+				session.user.is_admin && form.data.requester ? form.data.requester : session?.user.id
 		};
 		// console.log('ticketData', ticketData);
-		
+
 		await db.insert(tickets).values(ticketData).run();
-		form.data.labels.forEach(label => {
-			db.insert(ticketLabels).values({ticketId: ticketData.id, labelId: label}).run();
+		form.data.labels.forEach((label) => {
+			db.insert(ticketLabels).values({ ticketId: ticketData.id, labelId: label }).run();
 		});
+
+		const new_token = await try_refresh_token(session?.user.id);
+		console.log('new', new_token);
+
+		const token = (
+			await db.select().from(accounts).where(eq(accounts.userId, session?.user.id)).get()
+		).access_token;
+		// const token = (await getToken({ req: request, secret: AUTH_SECRET }))?.accessToken;
+		console.log('token', token);
+
+		if (token) {
+			const requesterEmail = (
+				await db.select().from(users).where(eq(users.id, ticketData.requester)).get()
+			).email;
+			console.log('requesterEmail', requesterEmail);
+
+			const email = emailTemplate;
+			// replace placeholders in email template
+			Object.entries(ticketData).forEach(([key, value]) => {
+				email.replace(`{{${key}}}`, value?.toString() || '');
+			});
+
+			await graph(token)
+				.api('/me/sendMail')
+				.post({
+					message: {
+						subject: 'New Ticket',
+						body: {
+							contentType: 'HTML',
+							content: email
+						},
+						toRecipients: [
+							{
+								emailAddress: {
+									address: requesterEmail
+								}
+							}
+						]
+					}
+				}, (error, response) => {
+					if (error.statusCode === 401) {
+						console.log('token expired');
+
+					}
+					console.log("just try to send mail", error, response);
+				}
+					).catch((error) => {
+						console.log(error);
+					});
+		}
 		throw redirect(303, `/t/${ticketData.id}`);
 	}
 };

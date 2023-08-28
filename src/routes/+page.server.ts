@@ -12,6 +12,7 @@ import {
 import type { PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { parseQueryString } from '$lib/filter';
+import fs from 'fs';
 
 export type TicketPreview = Ticket & {
 	requester_name: string | null;
@@ -26,24 +27,7 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 	// console.log(session);
 
 	const filters = parseQueryString(url.searchParams.get('q') || '');
-	console.log(filters);
-
-// 	SELECT
-//     t.*,
-//     GROUP_CONCAT(DISTINCT l.name) AS matching_labels
-// FROM tickets AS t
-// JOIN (
-//     SELECT
-//         tl.ticket_id
-//     FROM ticket_labels AS tl
-//     JOIN labels AS l ON tl.label_id = l.id
-//     WHERE l.name IN ('label1', 'label2', 'label3')
-//     GROUP BY tl.ticket_id
-//     HAVING COUNT(DISTINCT l.name) = 3
-// ) AS matching_tickets ON t.id = matching_tickets.ticket_id
-// LEFT JOIN ticket_labels AS tl ON t.id = tl.ticket_id
-// LEFT JOIN labels AS l ON tl.label_id = l.id
-// GROUP BY t.id;
+	// console.log(filters);
 
 	const allTickets = await db
 		.select({
@@ -109,7 +93,6 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 	// 		labels: labels || []
 	// 	};
 	// });
-
 
 	return {
 		allTicketsPreview,

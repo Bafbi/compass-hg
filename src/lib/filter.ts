@@ -114,11 +114,7 @@ export const parseQueryString = (query: string): TicketsFilters => {
 			const [type, value] = query.split(':');
 			switch (type) {
 				case 'is':
-					console.log('is', value);
-
 					if (isEnumValue(statusEnum, value)) {
-						console.log('it is');
-
 						// acc.status = [...(acc.status || []), value];
 						acc.status = value;
 					}
