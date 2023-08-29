@@ -8,7 +8,7 @@ import {
 	type SQLiteTableFn
 } from 'drizzle-orm/sqlite-core';
 
-import type { Adapter, AdapterAccount } from '@auth/core/adapters';
+import type { Adapter, AdapterAccount, AdapterUser } from '@auth/core/adapters';
 
 export function createTables(sqliteTable: SQLiteTableFn) {
 	const users = sqliteTable('users', {
@@ -151,7 +151,7 @@ export function SQLiteDrizzleAdapter(
 
 			// create a promise that resolves to the user
 			const user = (async () => {
-				return (await results).users;
+				return (await results)?.users as AdapterUser | null;
 			}
 			)();
 
