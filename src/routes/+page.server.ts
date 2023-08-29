@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 	// console.log(session);
 
 	const filters = parseQueryString(url.searchParams.get('q') || '');
-	// console.log(filters);
+	console.log(filters);
 
 	const allTickets = await db
 		.select({

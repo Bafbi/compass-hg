@@ -64,21 +64,24 @@ export const actions: Actions = {
 		const token = (
 			await db.select().from(accounts).where(eq(accounts.userId, session?.user.id)).get()
 		).access_token;
-		// const token = (await getToken({ req: request, secret: AUTH_SECRET }))?.accessToken;
-		// console.log('token', token);
-
-		if (token) {
+		
+		if (token && ticketData.notify) {
 			const requesterEmail = (
 				await db.select().from(users).where(eq(users.id, ticketData.requester)).get()
 			).email;
 			console.log('requesterEmail', requesterEmail);
 
-			const email = emailTemplate;
 			const createdTicketData = { ...ticketData, created_at: new Date().toLocaleString() };
+
 			// replace placeholders in email template
 			Object.entries(createdTicketData).forEach(([key, value]) => {
-				email.replace(`{{${key}}}`, value?.toString() || '');
+				console.log(`{{${key}}}`, value?.toString() || '');
+				
+				emailTemplate.replace(`{{${key}}}`, value?.toString() || '');
 			});
+
+			// console.log('email', emailTemplate);
+			
 
 			await graph(token)
 				.api('/me/sendMail')
@@ -87,7 +90,7 @@ export const actions: Actions = {
 						subject: 'New Ticket',
 						body: {
 							contentType: 'HTML',
-							content: email
+							content: emailTemplate
 						},
 						toRecipients: [
 							{
@@ -110,3 +113,4 @@ export const actions: Actions = {
 		throw redirect(303, `/t/${ticketData.id}`);
 	}
 };
+ 

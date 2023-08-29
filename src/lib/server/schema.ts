@@ -99,6 +99,7 @@ const labels = sqliteTable('labels', {
 	name: text('name').notNull().unique(),
 	description: text('description'),
 	color: integer("color").notNull(),
+	public: integer('public', { mode: 'boolean' }).notNull().default(false),
 	createdAt: integer('created_at', { mode: 'timestamp' })
 		.notNull()
 		.default(sql`(strftime('%s', 'now'))`),
@@ -107,10 +108,10 @@ const labels = sqliteTable('labels', {
 		.default(sql`(strftime('%s', 'now'))`),
 	createdBy: text('created_by')
 		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
+		.references(() => users.id),
 	updatedBy: text('updated_by')
 		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' })
+		.references(() => users.id)
 });
 
 export const insertLabelSchema = createInsertSchema(labels);

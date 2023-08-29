@@ -132,6 +132,7 @@
 								type="checkbox"
 								role="switch"
 								id="notify"
+								name="notify"
 								aria-invalid={$errors.notify ? 'true' : undefined}
 								bind:checked={$form.notify}
 								{...$constraints.notify}
@@ -170,7 +171,7 @@
 			>Submit</button
 		>
 	</form>
-	<SuperDebug data={$form} />
+	<!-- <SuperDebug data={$form} /> -->
 </div>
 
 <style>

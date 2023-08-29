@@ -101,5 +101,6 @@ export const handle = SvelteKitAuth({
 			}
 		})
 	],
-	secret: AUTH_SECRET
+	secret: AUTH_SECRET,
+	debug: false
 });
