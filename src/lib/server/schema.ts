@@ -1,69 +1,61 @@
 import { sql, type InferModel } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
-import {
-  integer,
-  sqliteTable,
-  text,
-  primaryKey,
-} from "drizzle-orm/sqlite-core";
-import type { AdapterAccount } from "@auth/core/adapters";
+import { integer, sqliteTable, text, primaryKey, blob } from 'drizzle-orm/sqlite-core';
+import type { AdapterAccount } from '@auth/core/adapters';
 import { serviceEnum, statusEnum } from '../const';
 
-const users = sqliteTable("users", {
-  id: text("id").notNull().primaryKey(),
-  name: text("name"),
-  email: text("email").notNull(),
-  emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
-  image: text("image"),
-	is_admin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
+const users = sqliteTable('users', {
+	id: text('id').notNull().primaryKey(),
+	name: text('name'),
+	email: text('email').notNull(),
+	emailVerified: integer('emailVerified', { mode: 'timestamp_ms' }),
+	image: text('image'),
+	is_admin: integer('is_admin', { mode: 'boolean' }).notNull().default(false)
 });
 
 const accounts = sqliteTable(
-  "accounts",
-  {
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccount["type"]>().notNull(),
-    provider: text("provider").notNull(),
-    providerAccountId: text("providerAccountId").notNull(),
-    refresh_token: text("refresh_token"),
-    access_token: text("access_token"),
-    expires_at: integer("expires_at"),
-    token_type: text("token_type"),
-    scope: text("scope"),
-    id_token: text("id_token"),
-    session_state: text("session_state"),
-  },
-  (account) => ({
-    compoundKey: primaryKey(account.provider, account.providerAccountId),
-  })
+	'accounts',
+	{
+		userId: text('userId')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		type: text('type').$type<AdapterAccount['type']>().notNull(),
+		provider: text('provider').notNull(),
+		providerAccountId: text('providerAccountId').notNull(),
+		refresh_token: text('refresh_token'),
+		access_token: text('access_token'),
+		expires_at: integer('expires_at'),
+		token_type: text('token_type'),
+		scope: text('scope'),
+		id_token: text('id_token'),
+		session_state: text('session_state')
+	},
+	(account) => ({
+		compoundKey: primaryKey(account.provider, account.providerAccountId)
+	})
 );
 
-export type InsertAccount = InferModel<typeof accounts, "insert">;
+export type InsertAccount = InferModel<typeof accounts, 'insert'>;
 
-
-const sessions = sqliteTable("sessions", {
-  sessionToken: text("sessionToken").notNull().primaryKey(),
-  userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+const sessions = sqliteTable('sessions', {
+	sessionToken: text('sessionToken').notNull().primaryKey(),
+	userId: text('userId')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	expires: integer('expires', { mode: 'timestamp_ms' }).notNull()
 });
 
 const verificationTokens = sqliteTable(
-  "verificationToken",
-  {
-    identifier: text("identifier").notNull(),
-    token: text("token").notNull(),
-    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
-  },
-  (vt) => ({
-    compoundKey: primaryKey(vt.identifier, vt.token),
-  })
+	'verificationToken',
+	{
+		identifier: text('identifier').notNull(),
+		token: text('token').notNull(),
+		expires: integer('expires', { mode: 'timestamp_ms' }).notNull()
+	},
+	(vt) => ({
+		compoundKey: primaryKey(vt.identifier, vt.token)
+	})
 );
-
-
 
 const tickets = sqliteTable('tickets', {
 	id: text('id').notNull().primaryKey(),
@@ -98,7 +90,7 @@ const labels = sqliteTable('labels', {
 	id: text('id').notNull().primaryKey(),
 	name: text('name').notNull().unique(),
 	description: text('description'),
-	color: integer("color").notNull(),
+	color: integer('color').notNull(),
 	public: integer('public', { mode: 'boolean' }).notNull().default(false),
 	createdAt: integer('created_at', { mode: 'timestamp' })
 		.notNull()
@@ -127,4 +119,27 @@ const ticketLabels = sqliteTable('ticket_labels', {
 		.references(() => labels.id, { onDelete: 'cascade' })
 });
 
-export { users, accounts, sessions, verificationTokens, tickets, labels, ticketLabels };
+const attachments = sqliteTable('attachments', {
+	id: text('id').notNull().primaryKey(),
+	name: text('name').notNull(),
+	type: text('type').notNull(),
+	blob: blob('blob', { mode: 'buffer' }).notNull(),
+	ticketId: text('ticket_id')
+		.notNull()
+		.references(() => tickets.id, { onDelete: 'cascade' })
+});
+
+export const insertAttachmentSchema = createInsertSchema(attachments);
+export type InsertAttachment = InferModel<typeof attachments, 'insert'>;
+export type Attachment = InferModel<typeof attachments, 'select'>;
+
+export {
+	users,
+	accounts,
+	sessions,
+	verificationTokens,
+	tickets,
+	labels,
+	ticketLabels,
+	attachments,
+};

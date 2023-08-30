@@ -105,6 +105,11 @@
 						</div>
 					</details>
 				</div>
+				<!-- Attachement -->
+				<div>
+					<!-- limit to 2mb -->
+					<input type="file" name="attachment" id="attachment" multiple>
+				</div>
 			</div>
 			<div class="flex flex-grow flex-col">
 				<label for="body">Body</label>

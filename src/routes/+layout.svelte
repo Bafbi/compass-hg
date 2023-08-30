@@ -1,6 +1,6 @@
 <script>
 	import { Toasts, toast } from 'svoast';
-	import Header from './Header.svelte';
+	import Header from '../lib/components/Header.svelte';
 	import '../app.css';
 </script>
 

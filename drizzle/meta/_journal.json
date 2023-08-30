@@ -29,6 +29,27 @@
       "when": 1693300732471,
       "tag": "0003_blushing_pixie",
       "breakpoints": false
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1693405551218,
+      "tag": "0004_public_swarm",
+      "breakpoints": false
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1693406782860,
+      "tag": "0005_condemned_proteus",
+      "breakpoints": false
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1693408183917,
+      "tag": "0006_shiny_abomination",
+      "breakpoints": false
     }
   ]
 }

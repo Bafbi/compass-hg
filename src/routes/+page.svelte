@@ -36,15 +36,57 @@
 		<div class="flex flex-row gap-2">
 			<!-- Labels -->
 			<Selector options={data.allLabels} filterName="label" {filters} let:option>
-				{option.id + "   " + option.selected}
+				<div class="flex flex-row items-center px-2 gap-2">
+					{#if option.selected}
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+					><path
+						fill="none"
+						stroke="currentColor"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M5 11L11 17L21 7"
+					/>
+				</svg>						
+					{/if}
+					<span>{option.id}</span>
+				</div>
 			</Selector>
 			<!-- Status -->
 			<Selector options={statusEnumIded()} filterName="is" {filters} let:option>
-				{option.id + "   " + option.selected}
+				<div class="flex flex-row items-center px-2 gap-2">
+					{#if option.selected}
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+					><path
+						fill="none"
+						stroke="currentColor"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M5 11L11 17L21 7"
+					/>
+				</svg>						
+					{/if}
+					<span>{option.id}</span>
+				</div>
 			</Selector>
 			<!-- Service -->
 			<Selector options={serviceEnumIded()} filterName="from" {filters} let:option>
-				{option.id + "   " + option.selected}
+				<div class="flex flex-row items-center px-2 gap-2">
+					{#if option.selected}
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+					><path
+						fill="none"
+						stroke="currentColor"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M5 11L11 17L21 7"
+					/>
+				</svg>						
+					{/if}
+					<span>{option.id}</span>
+				</div>
 			</Selector>
 		</div>
 			<a href="new" class="bg-primary rounded-xl p-2"> Create Ticket </a>

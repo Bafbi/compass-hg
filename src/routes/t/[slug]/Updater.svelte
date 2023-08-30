@@ -6,6 +6,7 @@
 	export let name: string;
 	export let value: string;
 	export let requireConfirm = false;
+	export let editable = false;
 
 	let editStatus = false;
 	let formElem: HTMLFormElement;
@@ -14,6 +15,7 @@
 <div class="flex flex-col">
 	<div class="bg-secondary-container z-10 flex flex-row justify-between rounded-lg px-2 py-1">
 		<span class=" text-lg underline">{name}</span>
+		{#if editable}
 		<div class=" flex flex-row">
 			{#if editStatus}
 				{#if requireConfirm}
@@ -60,6 +62,7 @@
 				</button>
 			{/if}
 		</div>
+		{/if}
 	</div>
 	{#if editStatus}
 		<!-- Submit when the value change -->

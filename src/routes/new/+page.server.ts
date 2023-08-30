@@ -6,7 +6,10 @@ import {
 	labels,
 	ticketLabels,
 	users,
-	accounts
+	accounts,
+	attachments,
+	type Attachment,
+	type InsertAttachment
 } from '$lib/server/schema';
 import { superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
@@ -19,7 +22,7 @@ import { graph, try_refresh_token } from '$lib/graph';
 
 export const load: PageServerLoad = async () => {
 	const allLabels = await db.select().from(labels).all();
-	const allUsers = await db.select().from(users).all();
+	const allUsers = await db.select().from(users).orderBy().all();
 
 	const form = await superValidate(insertTicketFormSchema);
 
@@ -29,15 +32,17 @@ export const load: PageServerLoad = async () => {
 
 const insertTicketFormSchema = insertTicketSchema
 	.pick({ title: true, fromService: true, body: true, notify: true })
-	.extend({ labels: z.string().array(), requester: z.string().optional() });
+	.extend({ labels: z.string().array(), requester: z.string().optional()});
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const session = await locals.getSession();
 		if (!session?.user) return fail(403, { error: 'You must be logged in to create a ticket.' });
-		const form = await superValidate(request, insertTicketFormSchema);
+		const formData = await request.formData();
+		const form = await superValidate(formData, insertTicketFormSchema);
 		console.log('POST', form);
 		if (!form.valid) return fail(400, { form });
+
 		const ticketData: InsertTicket = {
 			// generate an uuid
 			id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
@@ -46,7 +51,7 @@ export const actions: Actions = {
 			body: form.data.body,
 			createdBy: session?.user.id,
 			updatedBy: session?.user.id,
-			status: 'OPEN',
+			status: 'En Attente',
 			notify: form.data.notify,
 			requester:
 				session.user.is_admin && form.data.requester ? form.data.requester : session?.user.id
@@ -57,6 +62,21 @@ export const actions: Actions = {
 		form.data.labels.forEach((label) => {
 			db.insert(ticketLabels).values({ ticketId: ticketData.id, labelId: label }).run();
 		});
+
+		const file = formData.get('attachment');
+		if (file instanceof File) {
+		  console.log(file.name, file.type, file.size);
+		  // Convert to buffer then insert into db
+		  const buffer = Buffer.from(await file.arrayBuffer())
+		  const attachmentData: InsertAttachment = {
+			id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+			ticketId: ticketData.id,
+			name: file.name,
+			type: file.type,
+			blob: buffer
+		  }
+		  await db.insert(attachments).values(attachmentData).run();
+		}
 
 		const new_token = await try_refresh_token(session?.user.id);
 		console.log('new', new_token);

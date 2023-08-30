@@ -1,0 +1,1 @@
+ALTER TABLE attachments ADD `type` text NOT NULL;

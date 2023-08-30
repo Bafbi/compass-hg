@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { eq, sql, and, like, inArray } from 'drizzle-orm';
+import { eq, sql, and, like, inArray, desc, asc } from 'drizzle-orm';
 import {
 	tickets,
 	users,
@@ -53,7 +53,7 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 		.leftJoin(ticketLabels, eq(tickets.id, ticketLabels.ticketId))
 		.groupBy(tickets.id)
 		.having(filters.labels.length !== 0 ? sql`count(${ticketLabels.labelId}) = ${filters.labels.length}`: sql`1=1`)
-		.orderBy(tickets.createdAt)
+		.orderBy(asc(tickets.plannedFor), asc(tickets.createdAt))
 		.all();
 
 	// console.log(allTickets);

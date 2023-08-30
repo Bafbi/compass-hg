@@ -6,12 +6,11 @@
 	import Label from '$lib/components/Label.svelte';
 
 	export let ticket: TicketPreview;
-
 </script>
 
 <a href={'t/' + ticket.id}>
 	<div
-		class=" relative flex flex-col sm:flex-row gap-2 overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg"
+		class=" relative flex flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg sm:flex-row"
 	>
 		<!-- Status indicator -->
 		<div
@@ -19,11 +18,11 @@
 			class=" absolute bottom-0 left-0 top-0 w-1"
 			title="Status : {ticket.status.toLocaleLowerCase()}"
 		/>
-		<div class="shrink-0 hidden sm:block">
+		<!-- <div class="hidden shrink-0 sm:block">
 			<img class="h-12 w-12" src={githubLogo} alt="ChitChat Logo" />
-		</div>
+		</div> -->
 		<div class="flex-1 overflow-hidden">
-			<div class="whitespace-normal text-xl font-bold text-primary" title={ticket.body}>
+			<div class="whitespace-normal text-xl font-bold text-primary">
 				{ticket.title}
 			</div>
 			<div class="text-sm text-outline">
@@ -40,23 +39,33 @@
 				<span class="">by <strong>{ticket.requester_name}</strong></span>
 				<span class="">from <strong>{ticket.fromService}</strong></span>
 			</div>
+			{#if ticket.plannedFor}
+			<div class="text-sm text-outline">
+				<span>Plannifier pour</span>
+				<span><strong> {dayjs(ticket.plannedFor).format('DD/MM/YYYY')}</strong></span>
+			</div>
+		{/if}
 		</div>
 		<div class="flex flex-row flex-wrap">
 			{#each ticket.labels as label}
 				<Label {label} />
 			{/each}
 		</div>
+		
 	</div>
 </a>
 
 <style>
-	div[data-status='OPEN'] {
+	div[data-status='Ouvert'] {
 		background-color: #10b981;
 	}
-	div[data-status='CLOSED'] {
+	div[data-status='Fermé'] {
 		background-color: #ef4444;
 	}
-	div[data-status='PENDING'] {
+	div[data-status='En Attente'] {
 		background-color: #f59e0b;
+	}
+	div[data-status='Plannifier'] {
+		background-color: #3b82f6;
 	}
 </style>

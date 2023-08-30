@@ -49,7 +49,7 @@
 
 <svelte:window
 	on:click={(e) => {
-		
+		// @ts-ignore
 		if (!container.contains(e.target)) open = false;
 	}}
 />
@@ -60,7 +60,7 @@
 		{#if matches}
 			<dialog bind:this={dialog}>
 				<div
-					class="bg-tertiary-container flex flex-col gap-2 rounded-md p-2"
+					class="bg-secondary-container flex flex-col gap-2 rounded-md p-2"
 					bind:this={container}
 				>
 					<header>
@@ -68,19 +68,19 @@
 					</header>
 					<input type="search" bind:value={search} />
 
-					<a class="bg-primary rounded-xl p-2" href="?q={unselectQuery}"> Unselect </a>
+					<a class="bg-secndary rounded-xl p-2" href="?q={unselectQuery}"> Unselect </a>
 
 					{#each dataFiltered as option (option.id)}
 						{#if option.selected}
 							<a
-								class="bg-primary rounded-xl p-2"
+								class="bg-primary"
 								href="?q={removeQuery(filters, filterName, option.id)}"
-							>
+							> 
 								<slot {option} />
 							</a>
 						{:else}
 							<a
-								class="bg-surface-variant rounded-xl p-2"
+								class="bg-surface-variant"
 								href="?q={appendQuery(filters, filterName, option.id)}"
 							>
 								<slot {option} />
@@ -91,27 +91,27 @@
 			</dialog>
 		{:else}
 			<div
-				class="bg-tertiary-container absolute z-10 flex flex-col gap-2 rounded-md p-2"
+				class="bg-secondary-container absolute z-10 flex flex-col gap-2 rounded-md p-2"
 				bind:this={container}
 			>
-				<header>
-					<span>filter by {title}</span>
+				<header >
+					<span>Filtrer par {title}</span>
 				</header>
-				<input type="search" bind:value={search} />
+				<input type="search" bind:value={search} class=" bg-surface px-1 rounded-sm" placeholder="rechercher" />
 
-				<a class="bg-primary rounded-xl p-2" href="?q={unselectQuery}"> Unselect </a>
+				<a class="bg-tertiary rounded-md px-2" href="?q={unselectQuery}"> Unselect </a>
 
 				{#each dataFiltered as option (option.id)}
 					{#if option.selected}
 						<a
-							class="bg-primary rounded-xl p-2"
+							class="bg-primary rounded-md "
 							href="?q={removeQuery(filters, filterName, option.id)}"
 						>
 							<slot {option} />
 						</a>
 					{:else}
 						<a
-							class="bg-surface-variant rounded-xl p-2"
+							class="bg-surface-variant rounded-md shadow-md"
 							href="?q={appendQuery(filters, filterName, option.id)}"
 						>
 							<slot {option} />
