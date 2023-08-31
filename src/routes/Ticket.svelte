@@ -1,14 +1,21 @@
 <script lang="ts">
-	import type { InsertTicket } from '$lib/server/schema';
 	import githubLogo from '$lib/images/github.svg';
-	import dayjs, { Dayjs } from 'dayjs';
+	import dayjs from 'dayjs';
 	import type { TicketPreview } from './proxy+page.server';
 	import Label from '$lib/components/Label.svelte';
+	import { lastViewed } from '$lib/lastViewedStorage';
 
 	export let ticket: TicketPreview;
+
+	$: viewDate = $lastViewed[ticket.id] ? dayjs($lastViewed[ticket.id]) : null;
 </script>
 
-<a href={'t/' + ticket.id}>
+<a
+	href={'t/' + ticket.id}
+	on:click={() => {
+		$lastViewed = { ...$lastViewed, [ticket.id]: dayjs().toJSON() };
+	}}
+>
 	<div
 		class=" relative flex flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-bl from-surface from-60% to-secondary-container p-4 shadow-lg sm:flex-row"
 	>
@@ -18,6 +25,14 @@
 			class=" absolute bottom-0 left-0 top-0 w-1"
 			title="Status : {ticket.status.toLocaleLowerCase()}"
 		/>
+		<!-- Show marker in top right if ticket was never view or update_at is newer -->
+		{#if viewDate}
+			{#if dayjs(ticket.updatedAt).isAfter(viewDate)}
+				<div class="bg-primary absolute right-0 top-0 h-2 w-2 rounded-full" />
+			{/if}
+		{:else}
+			<div class="bg-tertiary absolute right-0 top-0 h-2 w-2 rounded-full" />
+		{/if}
 		<!-- <div class="hidden shrink-0 sm:block">
 			<img class="h-12 w-12" src={githubLogo} alt="ChitChat Logo" />
 		</div> -->

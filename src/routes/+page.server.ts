@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { eq, sql, and, like, inArray, asc } from 'drizzle-orm';
+import { eq, sql, and, like, inArray, asc, desc } from 'drizzle-orm';
 import { tickets, users, type Ticket, labels, ticketLabels, type Label } from '$lib/server/schema';
 
 import type { PageServerLoad } from './$types';
@@ -46,7 +46,10 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 				? sql`count(${ticketLabels.labelId}) = ${filters.labels.length}`
 				: sql`1=1`
 		)
-		.orderBy(asc(tickets.plannedFor), asc(tickets.createdAt))
+		// I want to order by plannedFor asc but if is NULL I want to order by createdAt desc
+		.orderBy(
+			sql`case when ${tickets.plannedFor} is null then ${tickets.createdAt} else ${tickets.plannedFor} end desc`
+		)
 		.all();
 	// console.log(allTickets);
 

@@ -8,7 +8,7 @@ import {
 } from '$env/static/private';
 import { db } from '$lib/server/db';
 import { SQLiteDrizzleAdapter } from '$lib/server/sqlite-nextauth-adapter';
-import { accounts, type InsertAccount } from '$lib/server/schema';
+import { accounts } from '$lib/server/schema';
 import { eq } from 'drizzle-orm';
 
 /**
@@ -22,35 +22,24 @@ declare module '@auth/core/types' {
 		user: {
 			id: string;
 			is_admin: boolean;
-			// ...other properties
-			// role: UserRole;
 		} & DefaultSession['user'];
 	}
 
 	interface User {
 		is_admin: boolean;
-		// ...other properties
-		// role: UserRole;
 	}
 }
-
-// declare module "@auth/core/types" {
-//   interface User {
-//     is_admin: boolean;
-//     // ...other properties
-//     // role: UserRole;
-//   }
-// }
 
 declare module '@auth/core/jwt' {
 	interface JWT extends DefaultJWT {
 		accessToken: string | undefined;
-		// ...other properties
-		// role: UserRole;
 	}
 }
 
 export const handle = SvelteKitAuth({
+	/**
+	 * @see https://next-auth.js.org/configuration/callbacks
+	 */
 	callbacks: {
 		session: async ({ session, user }) => ({
 			...session,
@@ -60,13 +49,11 @@ export const handle = SvelteKitAuth({
 				is_admin: user.is_admin
 			}
 		}),
-		jwt: async ({ token, account }) => {
-			if (account) {
-				token.accessToken = account.access_token;
-			}
-			return token;
-		},
-
+		/**
+		 * We update the user's account in database with the new tokens.
+		 *
+		 * @see https://learn.microsoft.com/en-us/graph/auth-v2-user?tabs=http
+		 */
 		async signIn({ account }) {
 			if (!account) return true;
 			// console.log('signIn', account);

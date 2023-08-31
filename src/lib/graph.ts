@@ -76,7 +76,7 @@ export const try_refresh_token = async (userId: string): Promise<boolean> => {
 
 export const fill_template = (template: string, data: { [key: string]: any }) => {
 	Object.entries(data).forEach(([key, value]) => {
-		template = template.replace(`{{${key}}}`, value.toString());
+		template = template.replace(`{{${key}}}`, value?.toString());
 	});
 	return template;
 };

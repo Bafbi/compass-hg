@@ -1,6 +1,11 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import { lastViewed } from '$lib/lastViewedStorage';
+	import dayjs from 'dayjs';
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import { superForm } from 'sveltekit-superforms/client';
+	import { toast } from 'svoast';
+	import { page } from '$app/stores';
 
 	export let action: string;
 	export let name: string;
@@ -8,6 +13,7 @@
 	export let requireConfirm = false;
 	export let editable = false;
 
+	const ticket_id = $page.params.slug;
 	let editStatus = false;
 	let formElem: HTMLFormElement;
 </script>
@@ -74,6 +80,18 @@
 				if (!requireConfirm) formElem.requestSubmit();
 			}}
 			class="-translate-y-3 rounded-lg border border-secondary-container px-2 py-1 pt-4"
+			use:enhance={() => {
+				return ({ result, update }) => {
+					if (result.type === 'success') {
+						toast.success(`Successfully updated ${name}`);
+						$lastViewed = { ...$lastViewed, [ticket_id]: dayjs().toJSON() };
+						editStatus = false;
+					} else {
+						toast.error(`Failed to update ${name}`);
+					}
+					update();
+				};
+			}}
 		>
 			<slot />
 		</form>

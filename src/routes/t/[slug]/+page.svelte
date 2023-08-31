@@ -36,6 +36,9 @@
 		errors: plannedErrors,
 		constraints: plannedConstraints
 	} = superForm(data.updatePlannedForm);
+	$: stringPlannedDate = $plannedForm.plannedFor
+		? new Date($plannedForm.plannedFor.toString()).toLocaleDateString()
+		: 'Pas de date';
 </script>
 
 <svelte:head>
@@ -51,7 +54,7 @@
 		</h1>
 
 		<section
-			class=" flex-1 overflow-y-scroll rounded-2xl border-2 border-secondary-container px-6 py-4 scrollbar-none"
+			class=" .md flex-1 overflow-y-scroll rounded-2xl border-2 border-secondary-container px-6 py-4 scrollbar-none"
 		>
 			{#if raw}
 				{ticket.raw}
@@ -62,7 +65,10 @@
 		{#if is_admin}
 			<a
 				class=" bg-tertiary w-fit rounded-md px-2 py-1"
-				href="mailto:name@rapidtables.com?subject=The%20subject%20of%20the%20mail"
+				href="mailto:name@rapidtables.com?{new URLSearchParams({
+					subject: 'new Ticket',
+					body: ticket.transfertEmail
+				})}"
 				target="_blank"
 				rel="noopener noreferrer">Tranférer par mail</a
 			>
@@ -128,7 +134,7 @@
 		<Updater
 			name="Plannifier pour"
 			action="?/planned"
-			value={$plannedForm.plannedFor?.toLocaleDateString() ?? 'Non definie'}
+			value={stringPlannedDate}
 			editable={is_admin}
 		>
 			<input

@@ -3,6 +3,7 @@
 	import { statusEnumIded, serviceEnumIded } from '$lib/const';
 	import { constructQueryString } from '$lib/filter';
 	import Ticket from './Ticket.svelte';
+
 	export let data;
 	$: tickets = data.allTicketsPreview;
 	$: filters = data.filters;

@@ -3,7 +3,6 @@ import { eq, sql } from 'drizzle-orm';
 import {
 	tickets,
 	users,
-	type Ticket,
 	insertTicketSchema,
 	ticketLabels,
 	labels,
@@ -15,13 +14,14 @@ import remarkBreaks from 'remark-breaks';
 
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
 
-export type TicketDetail = Ticket & {
-	createdBy_name: string | null;
-};
+// Can't be html
+import emailTemplate from './transfert-email.template.txt?raw';
+import { fill_template } from '$lib/graph';
+import dayjs from 'dayjs';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { slug: ticketId } = params;
@@ -51,6 +51,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const ticket = {
 		...selectTicket.ticket,
 		raw: selectTicket.ticket.body,
+		// We need to compile the markdown to html and sanitize it to avoid xss
 		body: await compile(selectTicket.ticket.body, {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
@@ -69,7 +70,9 @@ export const load: PageServerLoad = async ({ params }) => {
 		}),
 		createdBy_name: selectTicket.user.name,
 		labels: selectTicket.labels?.split(',').map((label) => label.trim()) ?? [],
-		attachments: selectAttachments
+		attachments: selectAttachments,
+		// Html don"t work with mail links
+		transfertEmail: fill_template(emailTemplate, selectTicket.ticket)
 	};
 
 	const allLabels = await db.select().from(labels).all();
@@ -101,12 +104,14 @@ export const actions: Actions = {
 	status: async ({ request, params, locals }) => {
 		const { slug: ticketId } = params;
 		const session = await locals.getSession();
-		if (!session?.user) return fail(403, { error: 'You must be logged in to update a ticket.' });
+		if (!session?.user) throw redirect(303, '/auth/signin');
+		if (!session.user.is_admin)
+			return fail(403, { error: 'You must be an admin to update the status of a ticket.' });
 		const form = await superValidate(request, updateStatusFormSchema);
-		if (!form.valid) return fail(400, { form });
+		if (!form.valid) return fail(400, { updateStatusForm: form });
 		await db
 			.update(tickets)
-			.set({ status: form.data.status })
+			.set({ status: form.data.status, updatedBy: session.user.id, updatedAt: dayjs().toDate() })
 			.where(eq(tickets.id, ticketId))
 			.run();
 	},
@@ -114,14 +119,20 @@ export const actions: Actions = {
 	service: async ({ request, params, locals }) => {
 		const { slug: ticketId } = params;
 		const session = await locals.getSession();
-		if (!session?.user) return fail(403, { error: 'You must be logged in to update a ticket.' });
+		if (!session?.user) throw redirect(303, '/auth/signin');
+		if (!session.user.is_admin)
+			return fail(403, { error: 'You must be an admin to update the service of a ticket.' });
 		const form = await superValidate(request, updateServiceFormSchema);
-		if (!form.valid) return fail(400, { form });
-		// console.log(form);
+
+		if (!form.valid) return fail(400, { updateServiceForm: form });
 
 		await db
 			.update(tickets)
-			.set({ fromService: form.data.fromService })
+			.set({
+				fromService: form.data.fromService,
+				updatedBy: session.user.id,
+				updatedAt: dayjs().toDate()
+			})
 			.where(eq(tickets.id, ticketId))
 			.run();
 	},
@@ -129,9 +140,11 @@ export const actions: Actions = {
 	label: async ({ request, params, locals }) => {
 		const { slug: ticketId } = params;
 		const session = await locals.getSession();
-		if (!session?.user) return fail(403, { error: 'You must be logged in to update a ticket.' });
+		if (!session?.user) throw redirect(303, '/auth/signin');
+		if (!session.user.is_admin)
+			return fail(403, { error: 'You must be an admin to update the labels of a ticket.' });
 		const form = await superValidate(request, updateLabelFormSchema);
-		if (!form.valid) return fail(400, { form });
+		if (!form.valid) return fail(400, { updateLabelForm: form });
 		// console.log(form);
 
 		await db.delete(ticketLabels).where(eq(ticketLabels.ticketId, ticketId)).run();
@@ -145,12 +158,12 @@ export const actions: Actions = {
 		await db.insert(ticketLabels).values(insertLabels).run();
 	},
 
-	updateNotify: async ({ request, params, locals }) => {
+	notify: async ({ request, params, locals }) => {
 		const { slug: ticketId } = params;
 		const session = await locals.getSession();
-		if (!session?.user) return fail(403, { error: 'You must be logged in to update a ticket.' });
+		if (!session?.user) throw redirect(303, '/auth/signin');
 		const form = await superValidate(request, updateNotifyFormSchema);
-		if (!form.valid) return fail(400, { form });
+		if (!form.valid) return fail(400, { updateNotifyForm: form });
 		await db
 			.update(tickets)
 			.set({ notify: form.data.notify })
@@ -161,12 +174,18 @@ export const actions: Actions = {
 	planned: async ({ request, params, locals }) => {
 		const { slug: ticketId } = params;
 		const session = await locals.getSession();
-		if (!session?.user) return fail(403, { error: 'You must be logged in to update a ticket.' });
+		if (!session?.user) throw redirect(303, '/auth/signin');
+		if (!session.user.is_admin)
+			return fail(403, { error: 'You must be an admin to update the planned date of a ticket.' });
 		const form = await superValidate(request, updatePlannedFormSchema);
-		if (!form.valid) return fail(400, { form });
+		if (!form.valid) return fail(400, { updatePlannedForm: form });
 		await db
 			.update(tickets)
-			.set({ plannedFor: form.data.plannedFor })
+			.set({
+				plannedFor: form.data.plannedFor,
+				updatedBy: session.user.id,
+				updatedAt: dayjs().toDate()
+			})
 			.where(eq(tickets.id, ticketId))
 			.run();
 	}

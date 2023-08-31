@@ -1,5 +1,8 @@
 import { isEnumValue, statusEnum, type Service, type Status, serviceEnum } from './const';
 
+/**
+ * This is all the filters that can be applied to the tickets.
+ */
 export type TicketsFilters = {
 	service: Service | null;
 	status: Status | null;
@@ -10,12 +13,18 @@ export type TicketsFilters = {
 
 type TicketsFiltersKeys = keyof TicketsFilters;
 
+/**
+ * The query keywords that can be used to filter the tickets.
+ */
 export type FilterTypeStrings = 'is' | 'label' | 'from' | 'by';
 
 type TicketsFiltersMapping = {
 	[K in FilterTypeStrings]: TicketsFiltersKeys;
 };
 
+/**
+ * This is the mapping between the query keywords and the filters.
+ */
 const TicketsFiltersTypes: TicketsFiltersMapping = {
 	is: 'status',
 	label: 'labels',
@@ -35,6 +44,11 @@ export function getFilterType<K extends TicketsFiltersKeys>(
 	) as FilterTypeStrings | undefined;
 }
 
+/**
+ *
+ * @param filters The filter object
+ * @returns The string representation of the filters
+ */
 export function constructQueryString(filters: TicketsFilters): string {
 	let queryString = '';
 
@@ -54,6 +68,13 @@ export function constructQueryString(filters: TicketsFilters): string {
 	return queryString;
 }
 
+/**
+ *
+ * @param filters The filter object to append to
+ * @param type The type of filter to append
+ * @param value The value of the filter to append
+ * @returns The string representation of the appended filter object
+ */
 export function appendQuery(
 	filters: TicketsFilters,
 	type: FilterTypeStrings,
@@ -71,6 +92,13 @@ export function appendQuery(
 	return constructQueryString(tmpFilters);
 }
 
+/**
+ *
+ * @param filters The filter object to remove from
+ * @param type The type of filter to remove
+ * @param values The values of the filter to remove
+ * @returns The string representation of the removed filter object
+ */
 export function removeQuery(
 	filters: TicketsFilters,
 	type: FilterTypeStrings,
