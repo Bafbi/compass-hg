@@ -7,21 +7,20 @@
 	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 	import { toast } from 'svoast';
 	import { base } from '$app/paths';
+	import { onMount } from 'svelte';
 
 	export let data;
 	$: labels = data.allLabels;
 	$: users = data.allUsers;
-	// $: graphClient = data.graphClient;
 
 	let previewOpen = false;
-
-	// let users = getUsers();
-	// async function getUsers() {
-	// 	if (!graphClient) return null;
-	// 		 return graphClient.api("/User.ReadBasic.All").get();
-	// }
+	let submiting = false;
 
 	const { form, errors, constraints } = superForm(data.form);
+
+	// onMount(() => {
+	// 	$form.requester = data.session?.user.id;
+	// });
 </script>
 
 <svelte:head>
@@ -30,7 +29,12 @@
 </svelte:head>
 
 <div class=" flex flex-grow p-4">
-	<form method="POST" class="flex flex-grow flex-col items-center gap-6 font-mono" use:enhance>
+	<form
+		method="POST"
+		class="flex flex-grow flex-col items-center gap-6 font-mono"
+		enctype="multipart/form-data"
+		use:enhance
+	>
 		<!-- Title -->
 		<div class="w-11/12">
 			<label for="title">Title</label>
@@ -106,9 +110,19 @@
 					</details>
 				</div>
 				<!-- Attachement -->
-				<div>
-					<!-- limit to 2mb -->
-					<input type="file" name="attachment" id="attachment" multiple>
+				<div class=" ">
+					<label for="attachments" class="mb-1 block">Attachments</label>
+					<input
+						type="file"
+						name="attachments"
+						id="attachments"
+						class="bg-surface w-full appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
+						multiple
+						aria-invalid={$errors.attachments ? 'true' : undefined}
+						bind:files={$form.attachments}
+						{...$constraints.attachments}
+					/>
+					{#if $errors.attachments}<span class="text-error">{$errors.attachments}</span>{/if}
 				</div>
 			</div>
 			<div class="flex flex-grow flex-col">
@@ -172,11 +186,14 @@
 			</div>
 		</div>
 
-		<button class="!bg-primary rounded-xl p-2" type="submit" on:click={() => (previewOpen = false)}
-			>Submit</button
+		<button
+			class="interactive-bg-primary rounded-xl p-2"
+			type="submit"
+			on:click={() => (previewOpen = false)}
+			disabled={submiting}>Submit</button
 		>
 	</form>
-	<!-- <SuperDebug data={$form} /> -->
+	<SuperDebug data={$form} />
 </div>
 
 <style>

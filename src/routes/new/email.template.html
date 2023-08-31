@@ -1,3 +1,4 @@
+<!-- https://www.caniemail.com/ to find what can be used -->
 <!DOCTYPE html>
 <html>
 	<head>
@@ -45,7 +46,7 @@
 	<body>
 		<div class="container">
 			<h1>Nouveau Ticket Créé</h1>
-			<p>Bonjour {requester},</p>
+			<p>Bonjour {{requester}},</p>
 			<p>Votre ticket avec les détails suivants a été créé avec succès :</p>
 			<ul>
 				<li><strong>ID du Ticket :</strong> {{id}}</li>
@@ -57,9 +58,7 @@
 				<li><strong>Date de Création :</strong> {{created_at}}</li>
 				<li><strong>Statut :</strong> {{status}}</li>
 			</ul>
-			<p>
-				Nous examinerons votre ticket dès que possible.
-			</p>
+			<p>Nous examinerons votre ticket dès que possible.</p>
 			<p>Cordialement,<br />Votre IT de Holweg</p>
 		</div>
 	</body>

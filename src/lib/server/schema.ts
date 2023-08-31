@@ -141,5 +141,5 @@ export {
 	tickets,
 	labels,
 	ticketLabels,
-	attachments,
+	attachments
 };

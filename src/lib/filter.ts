@@ -48,9 +48,9 @@ export function constructQueryString(filters: TicketsFilters): string {
 			} else {
 				queryString += `${filterType}:${filters[key]} `;
 			}
-		} 
+		}
 	});
-    
+
 	return queryString;
 }
 
@@ -89,21 +89,21 @@ export function removeQuery(
 }
 
 export function removeMultipleQuery(
-    filters: TicketsFilters,
-    type: FilterTypeStrings,
-    values: string[]
+	filters: TicketsFilters,
+	type: FilterTypeStrings,
+	values: string[]
 ): string {
-    const filterKey = getFilterKey(type);
-    const tmpFilters = { ...filters };
-    if (filterKey) {
-        if (Array.isArray(filters[filterKey])) {
-            tmpFilters[filterKey] = tmpFilters[filterKey].filter((v) => !values.includes(v));
-        } else {
-            tmpFilters[filterKey] = undefined;
-        }
-    }
-    
-    return constructQueryString(tmpFilters);
+	const filterKey = getFilterKey(type);
+	const tmpFilters = { ...filters };
+	if (filterKey) {
+		if (Array.isArray(filters[filterKey])) {
+			tmpFilters[filterKey] = tmpFilters[filterKey].filter((v) => !values.includes(v));
+		} else {
+			tmpFilters[filterKey] = undefined;
+		}
+	}
+
+	return constructQueryString(tmpFilters);
 }
 
 /// if one key is present in the query string, it will be added to the filters object.

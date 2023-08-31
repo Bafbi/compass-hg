@@ -40,18 +40,17 @@
 				<span class="">from <strong>{ticket.fromService}</strong></span>
 			</div>
 			{#if ticket.plannedFor}
-			<div class="text-sm text-outline">
-				<span>Plannifier pour</span>
-				<span><strong> {dayjs(ticket.plannedFor).format('DD/MM/YYYY')}</strong></span>
-			</div>
-		{/if}
+				<div class="text-sm text-outline">
+					<span>Plannifier pour</span>
+					<span><strong> {dayjs(ticket.plannedFor).format('DD/MM/YYYY')}</strong></span>
+				</div>
+			{/if}
 		</div>
 		<div class="flex flex-row flex-wrap">
 			{#each ticket.labels as label}
 				<Label {label} />
 			{/each}
 		</div>
-		
 	</div>
 </a>
 

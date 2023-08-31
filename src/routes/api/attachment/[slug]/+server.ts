@@ -16,13 +16,13 @@ export const GET = async ({ params }) => {
 	const file: File = new File([selectAttachment.blob], selectAttachment.name, {
 		type: selectAttachment.type
 	});
-    
+
 	return new Response(file.stream(), {
 		status: 200,
 		headers: {
 			'Content-Disposition': `attachment; filename="${file.name}";`,
 			'Content-Type': file.type,
-            'Content-Length': file.size.toFixed(0)
+			'Content-Length': file.size.toFixed(0)
 		}
 	});
 };

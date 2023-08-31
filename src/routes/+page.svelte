@@ -6,8 +6,6 @@
 	export let data;
 	$: tickets = data.allTicketsPreview;
 	$: filters = data.filters;
-
-
 </script>
 
 <svelte:head>
@@ -16,11 +14,11 @@
 </svelte:head>
 
 <div
-	class=" mx-auto my-4 flex w-full md:w-10/12 flex-col gap-6 rounded-2xl border-2 border-secondary-container p-2  md:px-6 md:py-4"
+	class=" mx-auto my-4 flex w-full flex-col gap-6 rounded-2xl border-2 border-secondary-container p-2 md:w-10/12 md:px-6 md:py-4"
 >
 	<!-- ToolBar -->
 	<section class="bg-surface-variant rounded-xl p-2 shadow-lg">
-		<div class="flex flex-col md:flex-row gap-4 items-center">
+		<div class="flex flex-col items-center gap-4 md:flex-row">
 			<!-- Query -->
 			<form action="?/" method="get" class="flex-1">
 				<input
@@ -32,65 +30,64 @@
 				/>
 			</form>
 
-		<!-- Filters -->
-		<div class="flex flex-row gap-2">
-			<!-- Labels -->
-			<Selector options={data.allLabels} filterName="label" {filters} let:option>
-				<div class="flex flex-row items-center px-2 gap-2">
-					{#if option.selected}
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-					><path
-						fill="none"
-						stroke="currentColor"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="1.5"
-						d="M5 11L11 17L21 7"
-					/>
-				</svg>						
-					{/if}
-					<span>{option.id}</span>
-				</div>
-			</Selector>
-			<!-- Status -->
-			<Selector options={statusEnumIded()} filterName="is" {filters} let:option>
-				<div class="flex flex-row items-center px-2 gap-2">
-					{#if option.selected}
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-					><path
-						fill="none"
-						stroke="currentColor"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="1.5"
-						d="M5 11L11 17L21 7"
-					/>
-				</svg>						
-					{/if}
-					<span>{option.id}</span>
-				</div>
-			</Selector>
-			<!-- Service -->
-			<Selector options={serviceEnumIded()} filterName="from" {filters} let:option>
-				<div class="flex flex-row items-center px-2 gap-2">
-					{#if option.selected}
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-					><path
-						fill="none"
-						stroke="currentColor"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="1.5"
-						d="M5 11L11 17L21 7"
-					/>
-				</svg>						
-					{/if}
-					<span>{option.id}</span>
-				</div>
-			</Selector>
-		</div>
+			<!-- Filters -->
+			<div class="flex flex-row gap-2">
+				<!-- Labels -->
+				<Selector options={data.allLabels} filterName="label" {filters} let:option>
+					<div class="flex flex-row items-center gap-2 px-2">
+						{#if option.selected}
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+								><path
+									fill="none"
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="1.5"
+									d="M5 11L11 17L21 7"
+								/>
+							</svg>
+						{/if}
+						<span>{option.id}</span>
+					</div>
+				</Selector>
+				<!-- Status -->
+				<Selector options={statusEnumIded()} filterName="is" {filters} let:option>
+					<div class="flex flex-row items-center gap-2 px-2">
+						{#if option.selected}
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+								><path
+									fill="none"
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="1.5"
+									d="M5 11L11 17L21 7"
+								/>
+							</svg>
+						{/if}
+						<span>{option.id}</span>
+					</div>
+				</Selector>
+				<!-- Service -->
+				<Selector options={serviceEnumIded()} filterName="from" {filters} let:option>
+					<div class="flex flex-row items-center gap-2 px-2">
+						{#if option.selected}
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+								><path
+									fill="none"
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="1.5"
+									d="M5 11L11 17L21 7"
+								/>
+							</svg>
+						{/if}
+						<span>{option.id}</span>
+					</div>
+				</Selector>
+			</div>
 			<a href="new" class="bg-primary rounded-xl p-2"> Create Ticket </a>
-
 		</div>
 	</section>
 	<!-- Tickets -->

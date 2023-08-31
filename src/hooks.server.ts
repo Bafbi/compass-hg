@@ -19,7 +19,7 @@ import { eq } from 'drizzle-orm';
  */
 declare module '@auth/core/types' {
 	interface Session {
-		user?: {
+		user: {
 			id: string;
 			is_admin: boolean;
 			// ...other properties
@@ -68,7 +68,7 @@ export const handle = SvelteKitAuth({
 		},
 
 		async signIn({ account }) {
-			if (!(account )) return true;
+			if (!account) return true;
 			// console.log('signIn', account);
 
 			const rawAccount = {
@@ -83,8 +83,12 @@ export const handle = SvelteKitAuth({
 				session_state: account.session_state?.toString()
 			};
 			// console.log('rawAccount', rawAccount);
-			await db.update(accounts).set(rawAccount).where(eq(accounts.providerAccountId, account.providerAccountId)).run();
-			
+			await db
+				.update(accounts)
+				.set(rawAccount)
+				.where(eq(accounts.providerAccountId, account.providerAccountId))
+				.run();
+
 			return true;
 		}
 	},

@@ -1,18 +1,10 @@
 import { db } from '$lib/server/db';
-import { eq, sql, and, like, inArray, desc, asc } from 'drizzle-orm';
-import {
-	tickets,
-	users,
-	type Ticket,
-	labels,
-	ticketLabels,
-	type Label
-} from '$lib/server/schema';
+import { eq, sql, and, like, inArray, asc } from 'drizzle-orm';
+import { tickets, users, type Ticket, labels, ticketLabels, type Label } from '$lib/server/schema';
 
 import type { PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { parseQueryString } from '$lib/filter';
-import fs from 'fs';
 
 export type TicketPreview = Ticket & {
 	requester_name: string | null;
@@ -20,20 +12,17 @@ export type TicketPreview = Ticket & {
 };
 
 export const load: PageServerLoad = async ({ url, parent }) => {
+	// Should never happen
 	const session = (await parent()).session;
 	if (!session) throw redirect(303, '/auth/signin');
-	if (!session.user) throw redirect(303, '/auth/signin');
-
-	// console.log(session);
 
 	const filters = parseQueryString(url.searchParams.get('q') || '');
-	console.log(filters);
 
 	const allTickets = await db
 		.select({
 			ticket: { ...tickets },
 			user: { name: users.name },
-			labels : sql<string | null>`group_concat(${ticketLabels.labelId}, ',')`
+			labels: sql<string | null>`group_concat(${ticketLabels.labelId}, ',')`
 		})
 		.from(tickets)
 		.where(
@@ -46,19 +35,22 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 				filters.service ? eq(tickets.fromService, filters.service) : sql`1=1`,
 				filters.status ? eq(tickets.status, filters.status) : sql`1=1`,
 				filters.labels.length !== 0 ? inArray(ticketLabels.labelId, filters.labels) : sql`1=1`,
-				filters.search ? like(tickets.title, `%${filters.search.join("%")}%`) : sql`1=1`
+				filters.search ? like(tickets.title, `%${filters.search.join('%')}%`) : sql`1=1`
 			)
 		)
 		.innerJoin(users, eq(tickets.requester, users.id))
 		.leftJoin(ticketLabels, eq(tickets.id, ticketLabels.ticketId))
 		.groupBy(tickets.id)
-		.having(filters.labels.length !== 0 ? sql`count(${ticketLabels.labelId}) = ${filters.labels.length}`: sql`1=1`)
+		.having(
+			filters.labels.length !== 0
+				? sql`count(${ticketLabels.labelId}) = ${filters.labels.length}`
+				: sql`1=1`
+		)
 		.orderBy(asc(tickets.plannedFor), asc(tickets.createdAt))
 		.all();
-
 	// console.log(allTickets);
-	
 
+	// Get all labels for each ticket, possibly a better way to use the labels field on `AllTickets` but I couldn't figure out how to get all labels for each ticket
 	const ticketsLabels = await db
 		.select({
 			ticketId: ticketLabels.ticketId,
@@ -68,8 +60,7 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 		.innerJoin(labels, eq(ticketLabels.labelId, labels.id))
 		.all();
 
-	//   console.log(ticketsLabels);
-
+	// Concatenate all labels for each ticket
 	const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
 		const labels = ticketsLabels
 			.filter((label) => label.ticketId === ticket.ticket.id)
@@ -81,18 +72,7 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 		};
 	});
 
-	// console.log(allTicketsPreview);
-
 	const allLabels = await db.select().from(labels).all();
-
-	// const allTicketsPreview: TicketPreview[] = allTickets.map((ticket) => {
-	// 	const labels = ticket.labels?.split(',').map(label => allLabels.find(l => l.id === label)).filter(l => l !== undefined) as Label[];
-	// 	return {
-	// 		...ticket.ticket,
-	// 		requester_name: ticket.user.name,
-	// 		labels: labels || []
-	// 	};
-	// });
 
 	return {
 		allTicketsPreview,

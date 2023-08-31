@@ -8,17 +8,18 @@ import {
 	users,
 	accounts,
 	attachments,
-	type Attachment,
 	type InsertAttachment
 } from '$lib/server/schema';
-import { superValidate } from 'sveltekit-superforms/server';
+import { setError, superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
+// Import the email template as a string
+// https://vitejs.dev/guide/assets.html#importing-asset-as-string
 import emailTemplate from './email.template.html?raw';
-import { graph, try_refresh_token } from '$lib/graph';
+import { fill_template, send_email, try_refresh_token } from '$lib/graph';
 
 export const load: PageServerLoad = async () => {
 	const allLabels = await db.select().from(labels).all();
@@ -30,18 +31,46 @@ export const load: PageServerLoad = async () => {
 	return { form, allLabels, allUsers };
 };
 
+// Zod schema for the form data validation
 const insertTicketFormSchema = insertTicketSchema
 	.pick({ title: true, fromService: true, body: true, notify: true })
-	.extend({ labels: z.string().array(), requester: z.string().optional()});
+	.extend({
+		labels: z.string().array(),
+		requester: z.string().optional(),
+		attachments: z.any().optional()
+	});
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const session = await locals.getSession();
+		// Should never happen
 		if (!session?.user) return fail(403, { error: 'You must be logged in to create a ticket.' });
+
 		const formData = await request.formData();
+		// Validate form data
 		const form = await superValidate(formData, insertTicketFormSchema);
-		console.log('POST', form);
 		if (!form.valid) return fail(400, { form });
+		// Validate attachments
+		const filesData = formData.getAll('attachments');
+		const files: File[] = [];
+		if (filesData instanceof Array) {
+			for (let i = 0; i < filesData.length; i++) {
+				const file = filesData[i];
+				if (file instanceof File) {
+					// Limit file size to 10MB
+					if (file.size > MAX_FILE_SIZE) {
+						return setError(
+							form,
+							'attachments',
+							`File '${file.name}' too big (max ${MAX_FILE_SIZE / 1024 / 1024}MB)`
+						);
+					}
+					files.push(file);
+				}
+			}
+		}
 
 		const ticketData: InsertTicket = {
 			// generate an uuid
@@ -56,81 +85,60 @@ export const actions: Actions = {
 			requester:
 				session.user.is_admin && form.data.requester ? form.data.requester : session?.user.id
 		};
-		// console.log('ticketData', ticketData);
 
+		// Insert ticket into db
 		await db.insert(tickets).values(ticketData).run();
-		form.data.labels.forEach((label) => {
+		// Link labels to ticket
+		const labelsInsertPromise = form.data.labels.flatMap(async (label) => {
 			db.insert(ticketLabels).values({ ticketId: ticketData.id, labelId: label }).run();
 		});
+		await Promise.all(labelsInsertPromise);
 
-		const file = formData.get('attachment');
-		if (file instanceof File) {
-		  console.log(file.name, file.type, file.size);
-		  // Convert to buffer then insert into db
-		  const buffer = Buffer.from(await file.arrayBuffer())
-		  const attachmentData: InsertAttachment = {
-			id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-			ticketId: ticketData.id,
-			name: file.name,
-			type: file.type,
-			blob: buffer
-		  }
-		  await db.insert(attachments).values(attachmentData).run();
-		}
+		// Insert attachments into db
+		files.forEach(async (file) => {
+			// Convert to buffer then insert into db
+			const buffer = Buffer.from(await file.arrayBuffer());
+			const attachmentData: InsertAttachment = {
+				id:
+					Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+				ticketId: ticketData.id,
+				name: file.name,
+				type: file.type,
+				blob: buffer
+			};
+			await db.insert(attachments).values(attachmentData).run();
+		});
 
-		const new_token = await try_refresh_token(session?.user.id);
-		console.log('new', new_token);
+		// Refresh token if needed then send email if wanted
+		try_refresh_token(session?.user.id)
+			.then(async (refreshed) => {
+				if (refreshed) {
+					console.log('Token was refreshed');
+				} else {
+					console.log('Token was not refreshed');
+				}
 
-		const token = (
-			await db.select().from(accounts).where(eq(accounts.userId, session?.user.id)).get()
-		).access_token;
-		
-		if (token && ticketData.notify) {
-			const requesterEmail = (
-				await db.select().from(users).where(eq(users.id, ticketData.requester)).get()
-			).email;
-			console.log('requesterEmail', requesterEmail);
+				const token = (
+					await db.select().from(accounts).where(eq(accounts.userId, session.user.id)).get()
+				).access_token;
 
-			const createdTicketData = { ...ticketData, created_at: new Date().toLocaleString() };
+				// return if we don't have a token or if the user doesn't want to be notified
+				if (!token || !ticketData.notify) return;
+				const requesterEmail = (
+					await db.select().from(users).where(eq(users.id, ticketData.requester)).get()
+				).email;
 
-			// replace placeholders in email template
-			Object.entries(createdTicketData).forEach(([key, value]) => {
-				console.log(`{{${key}}}`, value?.toString() || '');
-				
-				emailTemplate.replace(`{{${key}}}`, value?.toString() || '');
+				const createdTicketData = { ...ticketData, created_at: new Date().toLocaleString() };
+
+				const email = fill_template(emailTemplate, createdTicketData);
+
+				await send_email(token, `Nouveau ticket: ${ticketData.title}`, email, requesterEmail);
+			})
+			.catch((err) => {
+				console.error(err);
 			});
 
-			// console.log('email', emailTemplate);
-			
-
-			await graph(token)
-				.api('/me/sendMail')
-				.post({
-					message: {
-						subject: 'New Ticket',
-						body: {
-							contentType: 'HTML',
-							content: emailTemplate
-						},
-						toRecipients: [
-							{
-								emailAddress: {
-									address: requesterEmail
-								}
-							}
-						]
-					}
-				}, (error, response) => {
-					if (error.statusCode === 401) {
-						console.log('token expired');
-					}
-					// console.log("just try to send mail", error, response);
-				}
-					).catch((error) => {
-						console.log(error);
-					});
-		}
+		// Redirect to the ticket page
 		throw redirect(303, `/t/${ticketData.id}`);
 	}
 };
- 

@@ -152,8 +152,7 @@ export function SQLiteDrizzleAdapter(
 			// create a promise that resolves to the user
 			const user = (async () => {
 				return (await results)?.users as AdapterUser | null;
-			}
-			)();
+			})();
 
 			return user;
 		},

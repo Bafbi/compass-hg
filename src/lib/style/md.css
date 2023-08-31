@@ -1,64 +1,64 @@
-@tailwind base;
+@tailwind components;
 
-@layer base {
-  h1 {
-    @apply text-2xl text-primary;
-  }
-  h2 {
-    @apply text-xl;
-  }
-  h3 {
-    @apply text-lg;
-  }
-  h4 {
-    @apply text-base;
-  }
-  h5 {
-    @apply text-sm;
-  }
-  h6 {
-    @apply text-xs;
-  }
-  p {
-    @apply text-base;
-  }
-  a {
-    @apply text-primary;
-  }
-  ul {
-    @apply list-disc list-inside;
-  }
-  ol {
-    @apply list-decimal list-inside;
-  }
-  blockquote {
-    @apply border-l-4 border-primary pl-4;
-  }
-  pre {
-    @apply p-4 rounded-md;
-  }
-  code {
-    @apply text-sm;
-  }
-  hr {
-    @apply my-4;
-  }
-  table {
-    @apply w-full border-collapse border;
-  }
-  th {
-    @apply border px-4 py-2;
-  }
-  td {
-    @apply border px-4 py-2;
-  }
-  img {
-    @apply mx-auto;
-  }
-  /* code {
+@layer components {
+	h1 {
+		@apply text-2xl text-primary;
+	}
+	h2 {
+		@apply text-xl;
+	}
+	h3 {
+		@apply text-lg;
+	}
+	h4 {
+		@apply text-base;
+	}
+	h5 {
+		@apply text-sm;
+	}
+	h6 {
+		@apply text-xs;
+	}
+	p {
+		@apply text-base;
+	}
+	a {
+		@apply text-primary;
+	}
+	ul {
+		@apply list-inside list-disc;
+	}
+	ol {
+		@apply list-inside list-decimal;
+	}
+	blockquote {
+		@apply border-l-4 border-primary pl-4;
+	}
+	pre {
+		@apply rounded-md p-4;
+	}
+	code {
+		@apply text-sm;
+	}
+	hr {
+		@apply my-4;
+	}
+	table {
+		@apply w-full border-collapse border;
+	}
+	th {
+		@apply border px-4 py-2;
+	}
+	td {
+		@apply border px-4 py-2;
+	}
+	img {
+		@apply mx-auto;
+	}
+	/* code {
     @apply bg-tertiary-container rounded-md px-1;
   } */
-  hr {
-    @apply my-4;
-  }
+	hr {
+		@apply my-4;
+	}
 }

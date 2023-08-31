@@ -31,12 +31,9 @@ export const try_refresh_token = async (userId: string): Promise<boolean> => {
 
 	// quit if no refresh token or expires_at is in the future
 	if (!account.refresh_token || !account.expires_at || account.expires_at > Date.now()) {
-		console.log('no refresh token or expires_at is in the future');
-
+		// console.log('no refresh token or expires_at is in the future');
 		return false;
 	}
-
-	// console.log('fetch');
 
 	await fetch(
 		'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token'.replace(
@@ -57,10 +54,8 @@ export const try_refresh_token = async (userId: string): Promise<boolean> => {
 		}
 	)
 		.then(async (res) => {
-			// console.log('res', res);
 			if (res.ok) {
 				const data = await res.json();
-				// console.log('data', data);
 				await db
 					.update(accounts)
 					.set({
@@ -74,7 +69,45 @@ export const try_refresh_token = async (userId: string): Promise<boolean> => {
 			}
 		})
 		.catch((err) => {
-			console.error(err);
+			throw err;
 		});
 	return true;
+};
+
+export const fill_template = (template: string, data: { [key: string]: any }) => {
+	Object.entries(data).forEach(([key, value]) => {
+		template = template.replace(`{{${key}}}`, value.toString());
+	});
+	return template;
+};
+
+export const send_email = async (token: string, subject: string, body: string, to: string) => {
+	await graph(token)
+		.api('/me/sendMail')
+		.post(
+			{
+				message: {
+					subject,
+					body: {
+						contentType: 'HTML',
+						content: body
+					},
+					toRecipients: [
+						{
+							emailAddress: {
+								address: to
+							}
+						}
+					]
+				}
+			},
+			(error) => {
+				if (error.statusCode === 401) {
+					console.log('token expired');
+				}
+			}
+		)
+		.catch((error) => {
+			throw error;
+		});
 };

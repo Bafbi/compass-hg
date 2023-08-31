@@ -46,7 +46,9 @@
 <div class=" mx-4 my-6 flex flex-grow flex-col justify-center gap-6 md:flex-row">
 	<!-- Main content -->
 	<div class=" flex max-w-4xl flex-grow flex-col gap-6">
-		<h1 class="bg-surface-variant rounded-xl p-2 shadow-lg text-2xl text-primary font-semibold">{ticket.title}</h1>
+		<h1 class="bg-surface-variant rounded-xl p-2 text-2xl font-semibold text-primary shadow-lg">
+			{ticket.title}
+		</h1>
 
 		<section
 			class=" flex-1 overflow-y-scroll rounded-2xl border-2 border-secondary-container px-6 py-4 scrollbar-none"
@@ -123,7 +125,12 @@
 			</select>
 			{#if $labelErrors.labels}<span class="text-error">{$labelErrors.labels}</span>{/if}
 		</Updater>
-		<Updater name="Plannifier pour" action="?/planned" value={$plannedForm.plannedFor?.toLocaleDateString() ?? "Non definie"} editable={is_admin}>
+		<Updater
+			name="Plannifier pour"
+			action="?/planned"
+			value={$plannedForm.plannedFor?.toLocaleDateString() ?? 'Non definie'}
+			editable={is_admin}
+		>
 			<input
 				type="date"
 				name="plannedFor"
@@ -133,13 +140,16 @@
 				bind:value={$plannedForm.plannedFor}
 				{...$plannedConstraints.plannedFor}
 			/>
-			{#if $plannedErrors.plannedFor}<span class="text-error">{$plannedErrors.plannedFor}</span>{/if}
+			{#if $plannedErrors.plannedFor}<span class="text-error">{$plannedErrors.plannedFor}</span
+				>{/if}
 		</Updater>
 		<div>
 			<ul>
 				{#each ticket.attachments as attachment}
 					<li>
-						<a href="/api/attachment/{attachment.id}" target="_blank" rel="noopener noreferrer">{attachment.name}</a>
+						<a href="/api/attachment/{attachment.id}" target="_blank" rel="noopener noreferrer"
+							>{attachment.name}</a
+						>
 					</li>
 				{/each}
 			</ul>

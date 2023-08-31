@@ -4,9 +4,9 @@ export default {
 	out: 'drizzle',
 	schema: 'src/lib/server/schema.ts',
 	breakpoints: false,
-  driver: 'turso',
+	driver: 'turso',
 	dbCredentials: {
-		url: process.env.DATABASE_URL || "ws://127.0.0.1:8080",
-		authToken: process.env.DATABASE_AUTH_TOKEN || "",
+		url: process.env.DATABASE_URL || 'ws://127.0.0.1:8080',
+		authToken: process.env.DATABASE_AUTH_TOKEN || ''
 	}
 } satisfies Config;
