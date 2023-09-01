@@ -14,6 +14,6 @@
 	</main>
 
 	<footer class="bg-surface-variant w-full">
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+		<p class="text-center text-sm text-outline"><a href="https://www.holwegweber.com/">The HolwegWeber Group</a> – Sustainable solutions for daily life packaging</p>
 	</footer>
 </div>
