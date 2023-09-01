@@ -38,21 +38,20 @@
 			</div>
 			<div class="text-sm text-outline">
 				<!-- <span class=" font-light">#{ticket.id}</span> -->
-				<span>Open</span>
+				<span>Ouvert, il y a</span>
 				<strong>
 					{#if dayjs().diff(ticket.createdAt, 'day') < 1}
 						<span>{dayjs().diff(ticket.createdAt, 'hour')}h</span>
 					{:else}
-						<span>{dayjs().diff(ticket.createdAt, 'day')}d</span>
+						<span>{dayjs().diff(ticket.createdAt, 'day')}j</span>
 					{/if}
 				</strong>
-				<span>ago</span>
-				<span class="">by <strong>{ticket.requester_name}</strong></span>
-				<span class="">from <strong>{ticket.fromService}</strong></span>
+				<span class="">par <strong>{ticket.requester_name}</strong></span>
+				<span class="">depuis <strong>{ticket.fromService}</strong></span>
 			</div>
 			{#if ticket.plannedFor}
 				<div class="text-sm text-outline">
-					<span>Planifier pour</span>
+					<span>Planifié pour</span>
 					<span><strong> {dayjs(ticket.plannedFor).format('DD/MM/YYYY')}</strong></span>
 				</div>
 			{/if}

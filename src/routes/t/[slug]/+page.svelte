@@ -68,7 +68,7 @@
 				href="mailto:holweg@atheo.net?{new URLSearchParams({
 					subject: 'new Ticket',
 					body: ticket.transfertEmail
-				}).toString().replaceAll(' ', '%20')}"
+				}).toString().replaceAll('+', '%20')}"
 				target="_blank"
 				rel="noopener noreferrer">Transférer par mail</a
 			>
