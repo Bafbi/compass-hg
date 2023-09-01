@@ -63,7 +63,9 @@
 		/>
 		{#if $errors.public}<span class="text-error">{$errors.public}</span>{/if}
 		<!-- Submit -->
-		<button class="" type="submit" />
+		<button class="" type="submit">
+            Créer
+        </button>
 	</form>
 	<SuperDebug data={$form} />
 </div>
