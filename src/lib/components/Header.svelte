@@ -1,14 +1,16 @@
 <script>
 	import { page } from '$app/stores';
 	import { signIn, signOut } from '@auth/sveltekit/client';
+	import MediaQuery from './MediaQuery.svelte';
 </script>
 
 <header
 	class="bg-primary-variant mx-4 flex -translate-y-2 items-center justify-between rounded-lg p-4"
 >
-	<h1>
-		<a href="/" class="text-2xl font-bold">Ticketing HG</a>
-	</h1>
+	<a href="/" class=" flex flex-row gap-2">
+		<img class=" h-8 w-8" src="/favicon-96x96.png" alt="logo" />
+		<h1 class="text-2xl font-bold">Ticketing HG</h1>
+	</a>
 	<div class="flex items-center">
 		{#if $page.data.session}
 			<div class="flex items-center">
@@ -17,9 +19,13 @@
 						<img src={$page.data.session.user.image} alt="Profile" />
 					</div>
 				{/if}
-				<span class=" ml-2" title={$page.data.session.user?.email}>
-					<strong>{$page.data.session.user?.name ?? $page.data.session.user?.email}</strong>
-				</span>
+				<MediaQuery query="(min-width: 600px)" let:matches>
+					{#if matches}
+						<span class=" ml-2" title={$page.data.session.user?.email}>
+							<strong>{$page.data.session.user?.name ?? $page.data.session.user?.email}</strong>
+						</span>
+					{/if}
+				</MediaQuery>
 				<a href="/auth/signout" class="ml-4"
 					><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
 						><path

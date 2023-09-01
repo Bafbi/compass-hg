@@ -132,7 +132,7 @@
 			{#if $labelErrors.labels}<span class="text-error">{$labelErrors.labels}</span>{/if}
 		</Updater>
 		<Updater
-			name="Planifier pour"
+			name="Planifié pour"
 			action="?/planned"
 			value={stringPlannedDate}
 			editable={is_admin}

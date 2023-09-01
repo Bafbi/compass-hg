@@ -47,7 +47,7 @@
 					{/if}
 				</strong>
 				<span class="">par <strong>{ticket.requester_name}</strong></span>
-				<span class="">depuis <strong>{ticket.fromService}</strong></span>
+				<span class="">du service <strong>{ticket.fromService}</strong></span>
 			</div>
 			{#if ticket.plannedFor}
 				<div class="text-sm text-outline">
