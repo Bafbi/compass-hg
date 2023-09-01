@@ -31,6 +31,7 @@
 ## 📍 Résumé
 
 Compass-HG est une application web pour gérer les tickets destiné au service informatique. Elle permet de créer des tickets.
+
 ## 🛠️ Outils et services
 
 ### [Vercel](https://vercel.com/)
@@ -38,6 +39,7 @@ Compass-HG est une application web pour gérer les tickets destiné au service i
 > [Documentation](https://vercel.com/docs)
 
 Vercel est une plateforme de déploiement pour les applications statiques et les fonctions serverless. Elle permet de déployer des applications en quelques secondes.
+
 ### [Sveltekit](https://kit.svelte.dev/)
 
 > [Documentation](https://kit.svelte.dev/docs)
@@ -74,11 +76,13 @@ AuthJS est une librairie pour gérer l'authentification. Elle permet de gérer l
 4. Rajouter les [access](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/bfffc249-8043-439c-8ac9-2ed36f04a677/isMSAApp~/false) au graph api (`user.read`, `mail.send`).
 5. Installer [turso cli](https://docs.turso.tech/tutorials/get-started-turso-cli/step-01-installation) sur [wsl](https://learn.microsoft.com/en-us/windows/wsl/install) (ou linux/macos).
 6. Créer la base de donnée avec [turso cli](https://docs.turso.tech/tutorials/get-started-turso-cli/step-02-sign-up) et [générer](https://docs.turso.tech/reference/turso-cli#database-client-authentication-tokens) un token.
-7. Garder de coté le `url` et le `token`  de la base de donnée.
+7. Garder de coté le `url` et le `token` de la base de donnée.
 8. Setup les tables :
+
 ```bach
 turso db shell [db name] < [path to sql file]
 ```
+
 8. [Créer](https://docs.turso.tech/tutorials/vercel-setup-guide#alternative-manual-deployment) un projet sur vercel avec le fork.
    - Utiliser les variables d'environnement du fichier `.env.example`.
    - La variable `SECRET` est a remplir avec un [générateur](https://generate-secret.vercel.app/).
@@ -103,19 +107,25 @@ turso db shell [db name] < [path to sql file]
    turso dev -f [path to save file]
    ```
 3. Installer les dépendances :
+
 ```bash
 pnpm install
 ```
+
 4. Lancer le serveur :
+
 ```bash
 pnpm dev
 ```
 
 - Si les `schema` de la base de donnée change, il faut les mettre a jour :
+
 ```bash
 pnpm generate
 ```
+
 - Un outils pour voir la base de donnée :
+
 ```bash
 pnpm studio
 ---

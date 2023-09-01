@@ -50,7 +50,9 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 		)
 		// I want to order by plannedFor asc but if is NULL I want to order by createdAt desc
 		.orderBy(
-			sql`case when ${tickets.plannedFor} is null then 1 else 0 end`, tickets.plannedFor, desc(tickets.createdAt)
+			sql`case when ${tickets.plannedFor} is null then 1 else 0 end`,
+			tickets.plannedFor,
+			desc(tickets.createdAt)
 		)
 		.all();
 	// console.log(allTickets);
