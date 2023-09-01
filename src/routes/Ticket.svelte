@@ -56,7 +56,7 @@
 				</div>
 			{/if}
 		</div>
-		<div class="flex flex-row flex-wrap">
+		<div class="flex flex-row flex-wrap gap-2">
 			{#each ticket.labels as label}
 				<Label {label} />
 			{/each}
