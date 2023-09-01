@@ -1,5 +1,4 @@
 <script lang="ts">
-	import githubLogo from '$lib/images/github.svg';
 	import dayjs from 'dayjs';
 	import type { TicketPreview } from './proxy+page.server';
 	import Label from '$lib/components/Label.svelte';
@@ -33,9 +32,6 @@
 		{:else}
 			<div class="bg-tertiary absolute right-0 top-0 h-2 w-2 rounded-full" />
 		{/if}
-		<!-- <div class="hidden shrink-0 sm:block">
-			<img class="h-12 w-12" src={githubLogo} alt="ChitChat Logo" />
-		</div> -->
 		<div class="flex-1 overflow-hidden">
 			<div class="whitespace-normal text-xl font-bold text-primary">
 				{ticket.title}
