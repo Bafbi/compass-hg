@@ -17,6 +17,17 @@ export const GET = async ({ params }) => {
 		type: selectAttachment.type
 	});
 
+	if (file.type.includes('image')) {
+		return new Response(file, {
+			status: 200,
+			headers: {
+				'Content-Disposition': `inline; filename="${file.name}";`,
+				'Content-Type': file.type,
+				'Content-Length': file.size.toFixed(0)
+			}
+		});
+	}
+
 	return new Response(file.stream(), {
 		status: 200,
 		headers: {
