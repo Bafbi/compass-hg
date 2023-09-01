@@ -76,7 +76,7 @@
 	div[data-status='Fermé'] {
 		background-color: #ef4444;
 	}
-	div[data-status='En Attente'] {
+	div[data-status='En attente'] {
 		background-color: #f59e0b;
 	}
 	div[data-status='Plannifier'] {

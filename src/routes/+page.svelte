@@ -89,6 +89,9 @@
 				</Selector>
 			</div>
 			<a href="new" class="bg-primary rounded-xl p-2">Créer un ticket</a>
+			{#if data.session?.user.is_admin}
+				<a href="l" class="bg-primary rounded-xl p-2">labels</a>
+			{/if}
 		</div>
 	</section>
 	<!-- Tickets -->

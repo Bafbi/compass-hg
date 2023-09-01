@@ -12,7 +12,7 @@ import {
 } from '$lib/server/schema';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
@@ -21,8 +21,15 @@ import { fail, redirect } from '@sveltejs/kit';
 import emailTemplate from './email.template.html?raw';
 import { fill_template, send_email, try_refresh_token } from '$lib/graph';
 
-export const load: PageServerLoad = async () => {
-	const allLabels = await db.select().from(labels).all();
+export const load: PageServerLoad = async ({ parent }) => {
+	const session = (await parent()).session;
+	if (!session) throw redirect(303, '/auth/signin');
+
+	const allLabels = await db
+		.select()
+		.from(labels)
+		.where(!session.user.is_admin ? eq(labels.public, true) : sql`1=1`)
+		.all();
 	const allUsers = await db.select().from(users).orderBy().all();
 
 	const form = await superValidate(insertTicketFormSchema);
