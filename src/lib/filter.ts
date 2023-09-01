@@ -16,7 +16,7 @@ type TicketsFiltersKeys = keyof TicketsFilters;
 /**
  * The query keywords that can be used to filter the tickets.
  */
-export type FilterTypeStrings = 'is' | 'label' | 'from' | 'by';
+export type FilterTypeStrings = 'is' | 'tag' | 'from' | 'by';
 
 type TicketsFiltersMapping = {
 	[K in FilterTypeStrings]: TicketsFiltersKeys;
@@ -27,7 +27,7 @@ type TicketsFiltersMapping = {
  */
 const TicketsFiltersTypes: TicketsFiltersMapping = {
 	is: 'status',
-	label: 'labels',
+	tag: 'labels',
 	from: 'service',
 	by: 'requester'
 };
@@ -147,7 +147,7 @@ export const parseQueryString = (query: string): TicketsFilters => {
 						acc.status = value;
 					}
 					break;
-				case 'label':
+				case 'tag':
 					acc.labels = [...(acc.labels || []), value];
 					break;
 				case 'from':

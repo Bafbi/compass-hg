@@ -1,1 +1,0 @@
-ALTER TABLE labels ADD `public` integer DEFAULT false NOT NULL;

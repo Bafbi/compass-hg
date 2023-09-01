@@ -80,7 +80,7 @@ export const actions: Actions = {
 			body: form.data.body,
 			createdBy: session?.user.id,
 			updatedBy: session?.user.id,
-			status: 'En Attente',
+			status: 'En attente',
 			notify: form.data.notify,
 			requester:
 				session.user.is_admin && form.data.requester ? form.data.requester : session?.user.id

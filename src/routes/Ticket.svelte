@@ -56,7 +56,7 @@
 			</div>
 			{#if ticket.plannedFor}
 				<div class="text-sm text-outline">
-					<span>Plannifier pour</span>
+					<span>Planifier pour</span>
 					<span><strong> {dayjs(ticket.plannedFor).format('DD/MM/YYYY')}</strong></span>
 				</div>
 			{/if}

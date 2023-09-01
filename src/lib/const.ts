@@ -38,7 +38,7 @@ export const serviceEnumIded = () => {
 	return status;
 };
 
-export const statusEnum = ['Ouvert', 'Fermé', 'En Attente', 'Plannifier'] as const;
+export const statusEnum = ['Ouvert', 'Fermé', 'En attente', 'Planifier'] as const;
 export type Status = (typeof statusEnum)[number];
 
 export const statusEnumIded = () => {

@@ -34,7 +34,7 @@
 			<!-- Filters -->
 			<div class="flex flex-row gap-2">
 				<!-- Labels -->
-				<Selector options={data.allLabels} filterName="label" {filters} let:option>
+				<Selector options={data.allLabels} filterName="tag" {filters} let:option>
 					<div class="flex flex-row items-center gap-2 px-2">
 						{#if option.selected}
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"

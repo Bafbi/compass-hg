@@ -14,17 +14,27 @@ CREATE TABLE `accounts` (
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 
+CREATE TABLE `attachments` (
+	`id` text PRIMARY KEY NOT NULL,
+	`name` text NOT NULL,
+	`type` text NOT NULL,
+	`blob` blob NOT NULL,
+	`ticket_id` text NOT NULL,
+	FOREIGN KEY (`ticket_id`) REFERENCES `tickets`(`id`) ON UPDATE no action ON DELETE cascade
+);
+
 CREATE TABLE `labels` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
 	`description` text,
-	`color` text NOT NULL,
+	`color` integer NOT NULL,
+	`public` integer DEFAULT false NOT NULL,
 	`created_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
 	`updated_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
 	`created_by` text NOT NULL,
 	`updated_by` text NOT NULL,
-	FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
+	FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 
 CREATE TABLE `sessions` (
@@ -32,6 +42,13 @@ CREATE TABLE `sessions` (
 	`userId` text NOT NULL,
 	`expires` integer NOT NULL,
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
+);
+
+CREATE TABLE `ticket_labels` (
+	`ticket_id` text NOT NULL,
+	`label_id` text NOT NULL,
+	FOREIGN KEY (`ticket_id`) REFERENCES `tickets`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`label_id`) REFERENCES `labels`(`id`) ON UPDATE no action ON DELETE cascade
 );
 
 CREATE TABLE `tickets` (
@@ -46,6 +63,7 @@ CREATE TABLE `tickets` (
 	`from_service` text NOT NULL,
 	`status` text NOT NULL,
 	`planned_for` integer,
+	`notify` integer DEFAULT false NOT NULL,
 	FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`requester`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
@@ -56,7 +74,8 @@ CREATE TABLE `users` (
 	`name` text,
 	`email` text NOT NULL,
 	`emailVerified` integer,
-	`image` text
+	`image` text,
+	`is_admin` integer DEFAULT false NOT NULL
 );
 
 CREATE TABLE `verificationToken` (

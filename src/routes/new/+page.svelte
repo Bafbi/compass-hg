@@ -18,9 +18,9 @@
 
 	const { form, errors, constraints } = superForm(data.form);
 
-	// onMount(() => {
-	// 	$form.requester = data.session?.user.id;
-	// });
+	onMount(() => {
+		$form.requester = data.session?.user.id;
+	});
 </script>
 
 <svelte:head>
@@ -31,7 +31,7 @@
 <div class=" flex flex-grow p-4">
 	<form
 		method="POST"
-		class="flex flex-grow flex-col items-center gap-6 font-mono"
+		class="flex flex-grow flex-col items-center gap-6"
 		enctype="multipart/form-data"
 		use:enhance
 	>
@@ -193,7 +193,7 @@
 			disabled={submiting}>Submit</button
 		>
 	</form>
-	<SuperDebug data={$form} />
+	<!-- <SuperDebug data={$form} /> -->
 </div>
 
 <style>

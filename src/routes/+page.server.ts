@@ -18,6 +18,8 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 
 	const filters = parseQueryString(url.searchParams.get('q') || '');
 
+	const date = new Date('2099-12-31');
+
 	const allTickets = await db
 		.select({
 			ticket: { ...tickets },
@@ -48,7 +50,7 @@ export const load: PageServerLoad = async ({ url, parent }) => {
 		)
 		// I want to order by plannedFor asc but if is NULL I want to order by createdAt desc
 		.orderBy(
-			sql`case when ${tickets.plannedFor} is null then ${tickets.createdAt} else ${tickets.plannedFor} end desc`
+			sql`case when ${tickets.plannedFor} is null then 1 else 0 end`, tickets.plannedFor, desc(tickets.createdAt)
 		)
 		.all();
 	// console.log(allTickets);

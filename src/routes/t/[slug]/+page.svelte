@@ -70,7 +70,7 @@
 					body: ticket.transfertEmail
 				})}"
 				target="_blank"
-				rel="noopener noreferrer">Tranférer par mail</a
+				rel="noopener noreferrer">Transférer par mail</a
 			>
 		{/if}
 	</div>
@@ -110,7 +110,7 @@
 				>{/if}
 		</Updater>
 		<Updater
-			name="Labels"
+			name="Tags"
 			action="?/label"
 			value={labels.map((label) => label.name).join(', ')}
 			requireConfirm
