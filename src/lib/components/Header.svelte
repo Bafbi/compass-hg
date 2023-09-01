@@ -7,7 +7,7 @@
 	class="bg-primary-variant mx-4 flex -translate-y-2 items-center justify-between rounded-lg p-4"
 >
 	<h1>
-		<a href="/" class="text-2xl font-bold">CompassHG</a>
+		<a href="/" class="text-2xl font-bold">Ticketing HG</a>
 	</h1>
 	<div class="flex items-center">
 		{#if $page.data.session}

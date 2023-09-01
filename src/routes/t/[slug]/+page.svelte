@@ -42,7 +42,7 @@
 </script>
 
 <svelte:head>
-	<title>{ticket.title} - Compass-HG</title>
+	<title>{ticket.title} - Ticketing HG</title>
 	<meta name="body" content="See ticket details" />
 </svelte:head>
 

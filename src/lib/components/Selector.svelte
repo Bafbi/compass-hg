@@ -35,7 +35,7 @@
 	$: if (dialog) container = dialog.firstElementChild as HTMLElement;
 
 	// uppercase the first letter of the key filter name
-	let title = getFilterKey(filterName).charAt(0).toUpperCase() + getFilterKey(filterName).slice(1);
+	export let title = getFilterKey(filterName).charAt(0).toUpperCase() + getFilterKey(filterName).slice(1);
 
 	$: unselectQuery = removeMultipleQuery(
 		filters,

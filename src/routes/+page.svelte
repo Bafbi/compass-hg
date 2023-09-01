@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>Home - Ticketing HG</title>
 	<meta name="description" content="IT Ticketing app for Holweg" />
 </svelte:head>
 
@@ -34,7 +34,7 @@
 			<!-- Filters -->
 			<div class="flex flex-row gap-2">
 				<!-- Labels -->
-				<Selector options={data.allLabels} filterName="tag" {filters} let:option>
+				<Selector options={data.allLabels} filterName="tag" title="Tags" {filters} let:option>
 					<div class="flex flex-row items-center gap-2 px-2">
 						{#if option.selected}
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -88,7 +88,7 @@
 					</div>
 				</Selector>
 			</div>
-			<a href="new" class="bg-primary rounded-xl p-2"> Create Ticket </a>
+			<a href="new" class="bg-primary rounded-xl p-2">Créer un ticket</a>
 		</div>
 	</section>
 	<!-- Tickets -->

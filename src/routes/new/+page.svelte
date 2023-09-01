@@ -24,7 +24,7 @@
 </script>
 
 <svelte:head>
-	<title>New Ticket - Compass-HG</title>
+	<title>New Ticket - Ticketing HG</title>
 	<meta name="body" content="Create new ticket" />
 </svelte:head>
 
@@ -37,7 +37,7 @@
 	>
 		<!-- Title -->
 		<div class="w-11/12">
-			<label for="title">Title</label>
+			<label for="title">Titre</label>
 			<input
 				class="bg-surface w-full appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
 				type="text"
@@ -54,7 +54,7 @@
 			<!-- Details -->
 			<div class="flex flex-col gap-4 xl:w-80">
 				<div>
-					<label for="fromService">fromService</label>
+					<label for="fromService">Service</label>
 					<select
 						class="bg-surface w-full appearance-none rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
 						name="fromService"
@@ -88,7 +88,7 @@
 
 				<!-- labels -->
 				<div>
-					<label for="labels">Labels</label>
+					<label for="labels">Tags</label>
 
 					<details class="relative">
 						<summary
@@ -111,7 +111,7 @@
 				</div>
 				<!-- Attachement -->
 				<div class=" ">
-					<label for="attachments" class="mb-1 block">Attachments</label>
+					<label for="attachments" class="mb-1 block">Fichier joint</label>
 					<input
 						type="file"
 						name="attachments"
@@ -126,7 +126,7 @@
 				</div>
 			</div>
 			<div class="flex flex-grow flex-col">
-				<label for="body">Body</label>
+				<label for="body">Message</label>
 				<div
 					class="bg-surface flex flex-1 appearance-none flex-col gap-1 rounded-md border border-secondary px-3 py-2 focus:shadow-outline focus:outline-none"
 				>
@@ -135,14 +135,14 @@
 							<button
 								type="button"
 								data-selected={previewOpen}
-								class=" px-2 py-1"
-								on:click={() => (previewOpen = true)}>Preview</button
+								class=" px-2 py-1 text-sm"
+								on:click={() => (previewOpen = true)}>Prévue</button
 							>
 							<button
 								type="button"
 								data-selected={!previewOpen}
-								class=" px-2 py-1"
-								on:click={() => (previewOpen = false)}>Edit</button
+								class=" px-2 py-1 text-sm"
+								on:click={() => (previewOpen = false)}>Editer</button
 							>
 						</div>
 						<div>
@@ -157,7 +157,7 @@
 								{...$constraints.notify}
 							/>
 							<label class="inline-block pl-[0.15rem] hover:cursor-pointer" for="notify"
-								>Notify by email</label
+								>Notifier par email</label
 							>
 							{#if $errors.notify}<span class="text-error">{$errors.notify}</span>{/if}
 						</div>
@@ -176,7 +176,7 @@
 								name="body"
 								aria-invalid={$errors.body ? 'true' : undefined}
 								bind:value={$form.body}
-								placeholder="Content of the ticket"
+								placeholder="Contenue du ticket"
 								{...$constraints.body}
 							/>
 							{#if $errors.body}<span class="text-error">{$errors.body}</span>{/if}
@@ -190,7 +190,7 @@
 			class="interactive-bg-primary rounded-xl p-2"
 			type="submit"
 			on:click={() => (previewOpen = false)}
-			disabled={submiting}>Submit</button
+			disabled={submiting}>Créer</button
 		>
 	</form>
 	<!-- <SuperDebug data={$form} /> -->
