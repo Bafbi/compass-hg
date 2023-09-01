@@ -65,10 +65,10 @@
 		{#if is_admin}
 			<a
 				class=" bg-tertiary w-fit rounded-md px-2 py-1"
-				href="mailto:name@rapidtables.com?{new URLSearchParams({
+				href="mailto:holweg@atheo.net?{new URLSearchParams({
 					subject: 'new Ticket',
 					body: ticket.transfertEmail
-				})}"
+				}).toString().replaceAll(' ', '%20')}"
 				target="_blank"
 				rel="noopener noreferrer">Transférer par mail</a
 			>
@@ -132,7 +132,7 @@
 			{#if $labelErrors.labels}<span class="text-error">{$labelErrors.labels}</span>{/if}
 		</Updater>
 		<Updater
-			name="Plannifier pour"
+			name="Planifier pour"
 			action="?/planned"
 			value={stringPlannedDate}
 			editable={is_admin}
